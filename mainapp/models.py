@@ -5,7 +5,7 @@ from django.utils import timezone
 # Create your models here.
 
 class ScrapyItem(models.Model):
-    id_unique = models.CharField(max_length=100, null=True)
+    unique_id = models.CharField(max_length=100, null=True)
     data = models.TextField()
     date = models.DateTimeField(default=timezone.now)
 
@@ -18,4 +18,4 @@ class ScrapyItem(models.Model):
         return data
 
     def __str__(self):
-        return self.id_unique
+        return self.unique_id
