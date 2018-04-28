@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bjr oklm la famille ?</title>
+</head>
+<body>
+
+<form action="{% url 'mainapp:get_xpath' %}" method="post">
+{% csrf_token %}
+
+    <input type="text" name="xpath1" id="xpath1" />
+    <label for="xpath1">First xpath</label><br />
+    <input type="text" name="xpath2" id="xpath2" />
+    <label for="xpath2">Second xpath</label><br />
+
+<input type="submit" value="OK" />
+</form>
+
+
+</body>
+</html>
