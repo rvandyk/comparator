@@ -12,6 +12,9 @@ from mainapp.models import ScrapyItem
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
 
+def index(request):
+    return render(request,'mainapp/index.html')
+
 
 def is_valid_url(url):
     validate = URLValidator()
