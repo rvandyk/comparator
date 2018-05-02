@@ -19,3 +19,9 @@ class ScrapyItem(models.Model):
 
     def __str__(self):
         return self.unique_id
+
+class CrawlerModel(models.Model):
+    name = models.TextField()
+    url = models.TextField()
+    attributesJson = models.TextField()
+

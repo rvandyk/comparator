@@ -1,0 +1,93 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Crawls
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Crawls</h1>
+{% endblock %}
+
+
+{% block content %}
+
+    <h3>My Crawlers</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Url</th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for e in models %}
+        <tr>
+        <td>{{ e.name }}</td>
+        <td>{{ e.url }}</td>
+        <td> <button type="button" class="btn btn-danger">Run!</button> <button type="button" class="btn btn-warning">Edit</button></td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+
+
+    <br><br>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addcrawler">
+        Add crawler
+    </button>
+
+    <br><br>
+
+
+    <h3>Crawled data</h3>
+
+    {% for e in items %}
+        <a href="{% url 'mainapp:download_crawl' e.unique_id %}"> {{ e.unique_id }} </a>
+    {% endfor %}
+
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="addcrawler" tabindex="-1" role="dialog" aria-labelledby="addcrawler" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add crawler</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="{% url 'mainapp:add_crawler' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Crawler name</label>
+                            <input type="text" class="form-control" name = "name" id="name" placeholder="MyCrawler">
+                            <label for="url_sitemap">Sitemap URL</label>
+                            <input type="text" class="form-control" name = "url_sitemap" id="url_sitemap" placeholder="http://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="attributesJson">JSON Xpath</label>
+                            <textarea class="form-control" name="attributesJson" id="attributesJson" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add</button>
+
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

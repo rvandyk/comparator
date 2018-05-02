@@ -1,20 +1,39 @@
+from http.client import HTTPResponse
 from uuid import uuid4
 from urllib.parse import urlparse
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.views.decorators.http import require_POST, require_http_methods
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from scrapyd_api import ScrapydAPI
+from django.http import HttpResponse
+import json
+
+
 from mainapp.models import ScrapyItem
+from mainapp.models import CrawlerModel
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
 
+
+
+
 def index(request):
     return render(request,'mainapp/index.html')
 
+def crawlpage(request):
+    items = ScrapyItem.objects.all()
+    models = CrawlerModel.objects.all()
+    return render(request, 'mainapp/crawlpage.html', {'items' : items,'models' : models })
+
+def download_crawl(request, unique_id):
+    item = ScrapyItem.objects.filter(unique_id=unique_id).values()
+    response = HttpResponse(item, content_type = 'application/json')
+    response['Content-Disposition'] = 'attachment; filename=export.json'
+    return response
 
 def is_valid_url(url):
     validate = URLValidator()
@@ -25,6 +44,37 @@ def is_valid_url(url):
 
     return True
 
+def is_valid_json(jsonfile):
+    try :
+        json.loads(jsonfile)
+    except ValueError as e:
+        return False
+
+    return True
+
+@require_http_methods(['POST'])
+def addCrawler(request):
+
+        url = request.POST['url_sitemap']
+        name = request.POST['name']
+        attributesJson = request.POST['attributesJson']
+        print(url)
+        print(name)
+        print(attributesJson)
+
+        if (not is_valid_url(url)) or (not is_valid_json(attributesJson)):
+            print(str(is_valid_json(attributesJson)))
+            print(str(is_valid_url(url)))
+            print('error')
+            return redirect('/crawlpage')
+
+        crawler = CrawlerModel()
+        crawler.url = url
+        crawler.attributesJson = attributesJson
+        crawler.name = name
+        crawler.save()
+        print('saved')
+        return redirect('/crawlpage')
 
 @csrf_exempt
 @require_http_methods(['POST', 'GET'])  # only get and post
