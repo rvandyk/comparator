@@ -8,7 +8,8 @@ urlpatterns = [
     path('crawlpage/', views.crawlpage, name='crawlpage'),
     path('api/crawl', views.crawl, name='crawl'),
     path('crawlpage/download/<str:unique_id>/', views.download_crawl, name='download_crawl'),
-    path('crawlpage/add_crawler', views.addCrawler, name="add_crawler")
+    path('crawlpage/add_crawler', views.addCrawler, name="add_crawler"),
+    path('crawlpage/launch_crawler/<int:id>/', views.launchCrawler, name="launch_crawler")
 ]
 
 #SETTINGS ?

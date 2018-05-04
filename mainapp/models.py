@@ -24,4 +24,5 @@ class CrawlerModel(models.Model):
     name = models.TextField()
     url = models.TextField()
     attributesJson = models.TextField()
+    running = models.BooleanField(default=False)
 

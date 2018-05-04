@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from scrapyd_api import ScrapydAPI
 from django.http import HttpResponse
 import json
+import requests
 
 
 from mainapp.models import ScrapyItem
@@ -21,13 +22,19 @@ scrapyd = ScrapydAPI('http://localhost:6800')
 
 
 
+
 def index(request):
     return render(request,'mainapp/index.html')
 
 def crawlpage(request):
     items = ScrapyItem.objects.all()
     models = CrawlerModel.objects.all()
-    return render(request, 'mainapp/crawlpage.html', {'items' : items,'models' : models })
+    try :
+        jobs = scrapyd.list_jobs('default')['running']
+    except:
+        print('HECC')
+        jobs = []
+    return render(request, 'mainapp/crawlpage.html', {'items' : items,'models' : models,'jobs' : jobs })
 
 def download_crawl(request, unique_id):
     item = ScrapyItem.objects.filter(unique_id=unique_id).values()
@@ -76,6 +83,14 @@ def addCrawler(request):
         print('saved')
         return redirect('/crawlpage')
 
+def launchCrawler(request, id):
+    model = CrawlerModel.objects.get(id=id)
+    post_data = {'url': model.url, 'attributesJson' : model.attributesJson, 'id' : id}
+    requests.post('http://localhost:8000/api/crawl', data=post_data)
+    model.running = True
+    model.save()
+    return redirect('/crawlpage')
+
 @csrf_exempt
 @require_http_methods(['POST', 'GET'])  # only get and post
 def crawl(request):
@@ -83,6 +98,9 @@ def crawl(request):
     if request.method == 'POST':
 
         url = request.POST.get('url', None)  # take url comes from client. (From an input may be?)
+        attributesJson = request.POST.get('attributesJson')
+        id = request.POST.get('id')
+
 
         if not url:
             return JsonResponse({'error': 'Missing  args'})
@@ -98,6 +116,7 @@ def crawl(request):
         # I mean, anything
         settings = {
             'unique_id': unique_id,  # unique ID for each record for DB
+            'crawler_id': id,
             'USER_AGENT': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
         }
 
@@ -107,7 +126,7 @@ def crawl(request):
         # This returns a ID which belongs and will be belong to this task
         # We are goint to use that to check task's status.
         task = scrapyd.schedule('default', 'icrawler',
-                                settings=settings, url=url, domain=domain)
+                                settings=settings, url=url, domain=domain, attributesJson=attributesJson)
 
         return JsonResponse({'task_id': task, 'unique_id': unique_id, 'status': 'started'})
 

@@ -18,6 +18,7 @@
       <tr>
         <th>Name</th>
         <th>Url</th>
+          <th>Status</th>
         <th> </th>
       </tr>
     </thead>
@@ -26,7 +27,14 @@
         <tr>
         <td>{{ e.name }}</td>
         <td>{{ e.url }}</td>
-        <td> <button type="button" class="btn btn-danger">Run!</button> <button type="button" class="btn btn-warning">Edit</button></td>
+            <td>
+                {% if e.running == True %}Running
+                    {% else %} -
+                {% endif %}
+
+            </td>
+
+        <td> <a href="{% url 'mainapp:launch_crawler' e.id %}" role="button" class="btn btn-danger">Run!</a> <button type="button" class="btn btn-warning">Edit</button></td>
         </tr>
     {% endfor %}
 
@@ -43,6 +51,7 @@
     </button>
 
     <br><br>
+
 
 
     <h3>Crawled data</h3>
