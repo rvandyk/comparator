@@ -1,0 +1,86 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Add Comparator
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Add Comparator</h1>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+  <form action="{% url 'mainapp:add_comparator_form' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Comparator name</label>
+                            <input type="text" class="form-control" name = "name" id="name" placeholder="MyComparator">
+                        </div>
+
+        <div class="form-group">
+
+    <label for="crawler1">Crawler1</label>
+    <select class="form-control" id="crawler1" name="crawler1">
+        {% for crawler in crawlers %}
+            <option>{{ crawler.name }}</option>
+        {% endfor %}
+    </select>
+<br>
+        <label for="crawler2">Crawler2</label>
+    <select class="form-control" id="crawler2" name="crawler2">
+        {% for crawler in crawlers %}
+            <option>{{ crawler.name }}</option>
+        {% endfor %}
+    </select>
+  </div>
+
+
+                        {% if crawlersOK %}<button type="submit" class="btn btn-primary">Change</button>
+  {% else %}<button type="submit" class="btn btn-primary">Add</button>
+  {% endif %}
+
+
+
+        {% if crawlersOK %}
+
+
+
+
+    {% endif %}
+
+  </form>
+
+
+            <form>
+    <div id="forms">
+        Hitler
+    </div>
+    <button id="add-another">add another</button>
+
+</form>
+
+
+
+    <script>
+    form_count = 0;
+
+$("#add-another").click(function() {
+    form_count ++;
+
+    element = $('<input type="text"/>');
+    element.attr('name', 'extra_field_' + form_count);
+    $("#forms").append(element);
+    console.log(form_count)
+    // build element and append it to our forms container
+
+})
+</script>
+
+
+
+
+{% endblock %}

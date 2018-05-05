@@ -1,0 +1,40 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Comparator
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Comparator</h1>
+{% endblock %}
+
+
+{% block content %}
+    <h3>My Comparators</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Crawler1</th>
+          <th>Crawler2</th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+
+    </tbody>
+  </table>
+
+    <br><br>
+
+   <a href="{% url 'mainapp:add_comparator_form' %}" role="button" class="btn btn-primary">Add</a>
+
+
+{% endblock %}

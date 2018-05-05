@@ -29,6 +29,7 @@ class ScrapyAppPipeline(object):
         item = ScrapyItem()
         item.unique_id = self.unique_id
         item.data = self.items
+        item.crawler = self.crawler
         item.save()
         self.crawler.running = False
         self.crawler.save()

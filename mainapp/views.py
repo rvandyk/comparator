@@ -32,9 +32,31 @@ def crawlpage(request):
     try :
         jobs = scrapyd.list_jobs('default')['running']
     except:
-        print('HECC')
         jobs = []
     return render(request, 'mainapp/crawlpage.html', {'items' : items,'models' : models,'jobs' : jobs })
+
+def comparatorpage(request):
+    return render(request, 'mainapp/comparatorpage.html')
+
+def remove_crawler(request, id):
+    model = CrawlerModel.objects.get(id=id).delete()
+    return redirect('/crawlpage')
+
+def addComparatorForm(request):
+    if 'crawler1' in request.POST and 'crawler2' in request.POST:
+        crawlersOk = True
+        crawler1 = CrawlerModel.objects.get(name=request.POST['crawler1'])
+        crawler2 = CrawlerModel.objects.get(name=request.POST['crawler2'])
+        attributes1 = json.loads(crawler1.attributesJson)
+        attributes2 = json.loads(crawler2.attributesJson)
+    else:
+        crawlersOk = False
+        attributes1 = []
+        attributes2 = []
+
+    crawlers = CrawlerModel.objects.all()
+    return render(request, 'mainapp/addcomparator.html', {'attributes1' : attributes1, 'attributes2' : attributes2,
+                                                          'crawlers' : crawlers, 'crawlersOK': crawlersOk })
 
 def download_crawl(request, unique_id):
     item = ScrapyItem.objects.filter(unique_id=unique_id).values()
@@ -76,6 +98,31 @@ def addCrawler(request):
             return redirect('/crawlpage')
 
         crawler = CrawlerModel()
+        crawler.url = url
+        crawler.attributesJson = attributesJson
+        crawler.name = name
+        crawler.save()
+        print('saved')
+        return redirect('/crawlpage')
+
+
+@require_http_methods(['POST'])
+def editCrawler(request, id):
+
+        url = request.POST['url_sitemap']
+        name = request.POST['name']
+        attributesJson = request.POST['attributesJson']
+        print(url)
+        print(name)
+        print(attributesJson)
+
+        if (not is_valid_url(url)) or (not is_valid_json(attributesJson)):
+            print(str(is_valid_json(attributesJson)))
+            print(str(is_valid_url(url)))
+            print('error')
+            return redirect('/crawlpage')
+
+        crawler = CrawlerModel.objects.get(id=id)
         crawler.url = url
         crawler.attributesJson = attributesJson
         crawler.name = name

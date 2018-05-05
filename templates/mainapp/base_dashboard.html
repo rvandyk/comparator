@@ -50,9 +50,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {% if request.path == '/comparatorpage/'%} active {% endif %}" href="{% url 'mainapp:comparatorpage' %}">
                   <span data-feather="shopping-cart"></span>
-                  Products
+                  Comparator
                 </a>
               </li>
               <li class="nav-item">
