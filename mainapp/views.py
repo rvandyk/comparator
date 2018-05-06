@@ -14,7 +14,7 @@ import requests
 
 
 from mainapp.models import ScrapyItem
-from mainapp.models import CrawlerModel
+from mainapp.models import CrawlerModel, Comparator
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
@@ -36,7 +36,8 @@ def crawlpage(request):
     return render(request, 'mainapp/crawlpage.html', {'items' : items,'models' : models,'jobs' : jobs })
 
 def comparatorpage(request):
-    return render(request, 'mainapp/comparatorpage.html')
+    comparators = Comparator.objects.all()
+    return render(request, 'mainapp/comparatorpage.html', {'comparators' : comparators})
 
 def remove_crawler(request, id):
     model = CrawlerModel.objects.get(id=id).delete()
@@ -49,14 +50,35 @@ def addComparatorForm(request):
         crawler2 = CrawlerModel.objects.get(name=request.POST['crawler2'])
         attributes1 = json.loads(crawler1.attributesJson)
         attributes2 = json.loads(crawler2.attributesJson)
+    elif 'count' in request.POST:
+        relations = []
+        count = request.POST['count']
+        name = request.POST['name']
+        crawler1 = CrawlerModel.objects.get(id=request.POST['crawler1id'])
+        crawler2 = CrawlerModel.objects.get(id=request.POST['crawler2id'])
+        for i in range(0,int(count)+1):
+            if 'typeselect'+str(i) in request.POST:
+                relations.append((request.POST['typeselect'+str(i)],request.POST['crawlerselect1'+str(i)],request.POST['crawlerselect2'+str(i)]))
+
+        comparator = Comparator()
+        comparator.name = name
+        comparator.model1 = crawler1
+        comparator.model2 = crawler2
+        comparator.fields = json.dumps(relations)
+        comparator.save()
+        return redirect('/comparatorpage')
+
     else:
+        crawler1 = ''
+        crawler2 = ''
         crawlersOk = False
         attributes1 = []
         attributes2 = []
 
     crawlers = CrawlerModel.objects.all()
     return render(request, 'mainapp/addcomparator.html', {'attributes1' : attributes1, 'attributes2' : attributes2,
-                                                          'crawlers' : crawlers, 'crawlersOK': crawlersOk })
+                                                          'crawlers' : crawlers, 'crawlersOK': crawlersOk,
+                                                          'crawler1':crawler1, 'crawler2' : crawler2})
 
 def download_crawl(request, unique_id):
     item = ScrapyItem.objects.filter(unique_id=unique_id).values()

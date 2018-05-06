@@ -22,12 +22,14 @@
       </tr>
     </thead>
     <tbody>
+    {% for comparator in comparators %}
         <tr>
+        <td>{{ comparator.name }}</td>
+        <td>{{ comparator.model1.name }}</td>
+        <td>{{ comparator.model2.name }}</td>
 
-        <td></td>
-        <td></td>
-        <td></td>
         </tr>
+    {% endfor %}
 
     </tbody>
   </table>
