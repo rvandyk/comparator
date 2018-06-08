@@ -4,9 +4,8 @@
     <list default="true" id="7c41761c-ee81-4b6e-aa01-dd9447abe509" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mainapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/mainapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/mainapp/addcomparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/mainapp/addcomparator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/mainapp/comparatorpage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/mainapp/comparatorpage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrapy_app/dbs/default.db" beforeDir="false" afterPath="$PROJECT_DIR$/scrapy_app/dbs/default.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/httpRequests/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -58,23 +57,8 @@
       <file leaf-file-name="icrawler.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
-              <folding>
-                <element signature="e#24#37#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pipelines.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scrapy_app/scrapy_app/pipelines.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="32" column="19" selection-start-line="32" selection-start-column="19" selection-end-line="32" selection-end-column="19" />
-              <folding>
-                <element signature="e#195#246#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="630">
+              <caret line="35" column="37" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -82,7 +66,7 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/mainapp/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
+            <state relative-caret-position="288">
               <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
             </state>
           </provider>
@@ -91,17 +75,17 @@
       <file leaf-file-name="crawlpage.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/mainapp/crawlpage.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-177">
-              <caret line="129" column="50" selection-start-line="129" selection-start-column="50" selection-end-line="129" selection-end-column="50" />
+            <state relative-caret-position="450">
+              <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mainapp/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="68" column="40" selection-start-line="68" selection-start-column="40" selection-end-line="68" selection-end-column="40" />
+            <state relative-caret-position="-169">
+              <caret line="110" column="8" selection-start-line="110" selection-start-column="8" selection-end-line="110" selection-end-column="8" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -109,11 +93,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="addcomparator.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/mainapp/addcomparator.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="882">
-              <caret line="49" column="23" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
+      <file leaf-file-name="mainapp_scrapyitem" pinned="false" current-in-tab="false">
+        <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_scrapyitem">
+          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+            <state>
+              <filtering enabled="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mainapp_crawlermodel" pinned="false" current-in-tab="true">
+        <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_crawlermodel">
+          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+            <state>
+              <filtering enabled="true" />
             </state>
           </provider>
         </entry>
@@ -127,10 +120,19 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="addcomparator.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/mainapp/addcomparator.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="882">
+              <caret line="49" column="23" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="comparatorpage.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/mainapp/comparatorpage.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="219">
+            <state relative-caret-position="450">
               <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
             </state>
           </provider>
@@ -139,20 +141,11 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mainapp/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
+            <state relative-caret-position="396">
               <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mainapp/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
@@ -196,7 +189,6 @@
         <option value="$PROJECT_DIR$/templates/mainapp/style/dashboard.css" />
         <option value="$PROJECT_DIR$/templates/mainapp/crawls.html" />
         <option value="$PROJECT_DIR$/templates/mainapp/index.html" />
-        <option value="$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py" />
         <option value="$PROJECT_DIR$/scrapy_app/scrapy_app/pipelines.py" />
         <option value="$PROJECT_DIR$/templates/mainapp/crawlpage.html" />
         <option value="$PROJECT_DIR$/comparator/settings.py" />
@@ -207,6 +199,7 @@
         <option value="$PROJECT_DIR$/templates/mainapp/addcomparator.html" />
         <option value="$PROJECT_DIR$/templates/mainapp/comparatorpage.html" />
         <option value="$PROJECT_DIR$/mainapp/views.py" />
+        <option value="$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py" />
       </list>
     </option>
   </component>
@@ -248,6 +241,24 @@
               <item name="comparator" type="b2602c69:ProjectViewProjectNode" />
               <item name="comparator" type="462c0819:PsiDirectoryNode" />
               <item name="mainapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="comparator" type="b2602c69:ProjectViewProjectNode" />
+              <item name="comparator" type="462c0819:PsiDirectoryNode" />
+              <item name="scrapy_app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="comparator" type="b2602c69:ProjectViewProjectNode" />
+              <item name="comparator" type="462c0819:PsiDirectoryNode" />
+              <item name="scrapy_app" type="462c0819:PsiDirectoryNode" />
+              <item name="scrapy_app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="comparator" type="b2602c69:ProjectViewProjectNode" />
+              <item name="comparator" type="462c0819:PsiDirectoryNode" />
+              <item name="scrapy_app" type="462c0819:PsiDirectoryNode" />
+              <item name="scrapy_app" type="462c0819:PsiDirectoryNode" />
+              <item name="spiders" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="comparator" type="b2602c69:ProjectViewProjectNode" />
@@ -409,7 +420,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525542843832</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Comparator creation and vizualisation">
+      <created>1525615167416</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1525615167416</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -426,20 +444,20 @@
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4978678" weight="0.32897604" />
-      <window_info anchor="bottom" id="Event Log" order="14" sideWeight="0.3955224" side_tool="true" visible="true" weight="0.375817" />
+      <window_info anchor="bottom" id="Event Log" order="14" sideWeight="0.39872068" side_tool="true" visible="true" weight="0.540305" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.6012793" weight="0.375817" />
       <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49573562" weight="0.32897604" />
       <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49307036" weight="0.32897604" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.6044776" visible="true" weight="0.375817" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.6545842" weight="0.40413943" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.6503198" weight="0.540305" />
       <window_info anchor="bottom" id="Database Console" order="12" sideWeight="0.49840087" weight="0.32897604" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1705757" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17377399" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="right" id="Database" order="3" visible="true" weight="0.23773988" />
+      <window_info anchor="right" id="Database" order="3" visible="true" weight="0.22921109" />
       <window_info anchor="right" id="SciView" order="4" weight="0.32995737" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4968017" weight="0.39978212" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -462,7 +480,8 @@
     <MESSAGE value="front end" />
     <MESSAGE value="front end crawler launching and status" />
     <MESSAGE value="Crawler management DONE&#10;Comparator - stuck with some form problems" />
-    <option name="LAST_COMMIT_MESSAGE" value="Crawler management DONE&#10;Comparator - stuck with some form problems" />
+    <MESSAGE value="Comparator creation and vizualisation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comparator creation and vizualisation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -531,9 +550,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="25" column="27" lean-forward="true" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
-          <folding>
-            <element signature="e#24#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -579,9 +595,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="10" column="63" selection-start-line="10" selection-start-column="63" selection-end-line="10" selection-end-column="63" />
-          <folding>
-            <element signature="e#24#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -755,23 +768,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_scrapyitem">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-          <folding>
-            <element signature="e#24#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/comparator/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="279">
@@ -787,48 +783,55 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/mainapp/modals.html" />
-    <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_crawlermodel">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrapy_app/scrapy_app/pipelines.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
+        <state relative-caret-position="540">
           <caret line="32" column="19" selection-start-line="32" selection-start-column="19" selection-end-line="32" selection-end-column="19" />
-          <folding>
-            <element signature="e#195#246#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/mainapp/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/mainapp/crawlpage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-177">
-          <caret line="129" column="50" selection-start-line="129" selection-start-column="50" selection-end-line="129" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_comparator">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mainapp/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/mainapp/comparatorpage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mainapp/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/mainapp/crawlpage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/mainapp/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrapy_app/scrapy_app/spiders/icrawler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="35" column="37" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -839,30 +842,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/mainapp/comparatorpage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mainapp/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mainapp/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="68" column="40" selection-start-line="68" selection-start-column="40" selection-end-line="68" selection-end-column="40" />
+        <state relative-caret-position="-169">
+          <caret line="110" column="8" selection-start-line="110" selection-start-column="8" selection-end-line="110" selection-end-column="8" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_scrapyitem">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_comparator">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://764aecae-2d07-4139-8a7d-86f7d0accb7f/schema/main/table/mainapp_crawlermodel">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
         </state>
       </provider>
     </entry>
