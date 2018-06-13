@@ -21,7 +21,7 @@ class ScrapyItem(models.Model):
     @property
     def to_dict(self):
         data = {
-            'data' : json.load(self.data),
+            'data' : json.loads(self.data),
             'date' : self.date
         }
         return data

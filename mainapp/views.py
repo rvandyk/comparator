@@ -11,6 +11,7 @@ from scrapyd_api import ScrapydAPI
 from django.http import HttpResponse
 import json
 import requests
+import ast
 
 import json 
 import re
@@ -231,11 +232,9 @@ def crawl(request):
             return JsonResponse({'status': status})
 
 
-def format_file(f):
-    f = open(f, 'r')
-    ret = f.read()
-    ret = ret.replace("\\\\\\\\", "\\")    
-    return ret
+def format_file(f):    
+    f = f.replace("\\\\\\\\", "\\")    
+    return f
 
 def extract_prices(e):
     res = []
@@ -270,34 +269,47 @@ def price_sim(item1, item2, f1, f2, rate):
 def compare(request, id):
 
     comp = Comparator.objects.get(id=id)
-    process_list = comp.fields
+    process_list = ast.literal_eval(comp.fields)
+
     
     #[["Keyword analysis", "titre", "title"], ["Price analysis", "price", "price"]]    
 
     #process_list = [('titre', 'titre', 'string_sim', 70), ('price', 'price', 'price_sim', 15/100)]
+    json1 = ScrapyItem.objects.get(crawler=comp.model1)
+    json2 = ScrapyItem.objects.get(crawler=comp.model2)
+    
 
-    json1 = open(file1, 'r')
-    json2 = open(file2, 'r')
 
-    data1 = eval(format_file('export.json'))
-    data2 = eval(format_file('export2.json'))
+    #json1 = open(file1, 'r')
+    #json2 = open(file2, 'r')
+
+    data1 = ast.literal_eval(format_file(json1.data))
+    data2 = ast.literal_eval(format_file(json2.data))
 
 
     bigboi = []
-
+    i=0
     for d1 in data1:      
-        item1 = dict(d1)    
-        for d2 in data2:                    
-            item2 = dict(d2)
+        item1 = ast.literal_eval(d1)    
+        for d2 in data2:   
+            i=i+1                 
+            item2 = ast.literal_eval(d2)
+            indicator = 1
             to_append = {"item1" : item1, "item2": item2}
             if item1['titre'] and item2['title']:
                 for e in process_list:            
-                    if e[2] == "string_sim":
-                        to_append[e[0]+"_"+e[1]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],70)
-                    elif e[2] == "price_sim":
-                        to_append[e[0]+"_"+e[1]+"_price_sim"] = price_sim(item1,item2,e[0],e[1],15/100)
-                bigboi.append(to_append)     
+                    if e[0] == "string_sim":                        
+                        to_append[e[1]+"_"+e[2]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],60)   
+                        indicator = indicator*string_sim(item1,item2,e[1],e[2],60)                           
+                    elif e[0] == "price_sim":
+                        to_append[e[1]+"_"+e[2]+"_price_sim"] = price_sim(item1,item2,e[1],e[2],15) 
+                        indicator = indicator*price_sim(item1,item2,e[1],e[2],15)                                  
+                
+                if indicator:
+                    bigboi.append(to_append)    
+            print(str(i) + "/" + str(len(data1)*len(data2))) 
 
 
-    sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[0]+"_"+e[1]+"_"+e[2]]/len(process_list) for e in process_list)), reverse=True) 
+    sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
+    return HttpResponse(sortedboi)
     

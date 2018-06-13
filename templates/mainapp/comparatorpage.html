@@ -18,6 +18,8 @@
         <th>Name</th>
         <th>Crawler1</th>
           <th>Crawler2</th>
+          <th>Data1</th>
+          <th>Data2</th>
           <th></th>
         <th> </th>
       </tr>
@@ -30,7 +32,7 @@
         <td>{{ comparator.model2.name }}</td>
         <td>{% if comparator.running == True %}Running
           {% else %}
-          <a href="{% url 'mainapp:launch_comparator comparator.id'%}" role="button" class="btn btn-danger">Run!</a>
+          <a href="{% url 'mainapp:launch_comparator' comparator.id%}" role="button" class="btn btn-danger">Run!</a>
       {% endif %}</td>
 
         </tr>
