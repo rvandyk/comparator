@@ -12,6 +12,9 @@ from django.http import HttpResponse
 import json
 import requests
 
+import json 
+import re
+from fuzzywuzzy import fuzz
 
 from mainapp.models import ScrapyItem
 from mainapp.models import CrawlerModel, Comparator
@@ -226,3 +229,75 @@ def crawl(request):
                 return JsonResponse({'error': str(e)})
         else:
             return JsonResponse({'status': status})
+
+
+def format_file(f):
+    f = open(f, 'r')
+    ret = f.read()
+    ret = ret.replace("\\\\\\\\", "\\")    
+    return ret
+
+def extract_prices(e):
+    res = []
+    for i in e['price']:
+        p = re.findall("\d+", str(i))[0]
+        res.append(p)
+    return res
+
+def string_sim(item1, item2, f1, f2, treshold):    
+    if item1[f1] and item2[f2]:              
+        ratio = fuzz.ratio(item1[f1][0], item2[f2][0])
+        if (ratio > treshold):                
+            return ratio
+        else:
+            return 0
+    else:
+        return 0
+
+def price_sim(item1, item2, f1, f2, rate):    
+    if item1[f1] and item2[f2]:
+        prices1 = extract_prices(item1)             
+        prices2 = extract_prices(item2)
+        res = 0 
+        for p1 in prices1:
+            for p2 in prices2:
+                if float(p1) > (float(p2) - (float(p2)*rate)) and float(p1) < (float(p2) + (float(p2)*rate)):
+                    res = res + 1 
+        return res/(len(prices1)*len(prices2))*100
+    else:
+        return 0
+
+def compare(request, id):
+
+    comp = Comparator.objects.get(id=id)
+    process_list = comp.fields
+    
+    #[["Keyword analysis", "titre", "title"], ["Price analysis", "price", "price"]]    
+
+    #process_list = [('titre', 'titre', 'string_sim', 70), ('price', 'price', 'price_sim', 15/100)]
+
+    json1 = open(file1, 'r')
+    json2 = open(file2, 'r')
+
+    data1 = eval(format_file('export.json'))
+    data2 = eval(format_file('export2.json'))
+
+
+    bigboi = []
+
+    for d1 in data1:      
+        item1 = dict(d1)    
+        for d2 in data2:                    
+            item2 = dict(d2)
+            to_append = {"item1" : item1, "item2": item2}
+            if item1['titre'] and item2['title']:
+                for e in process_list:            
+                    if e[2] == "string_sim":
+                        to_append[e[0]+"_"+e[1]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],70)
+                    elif e[2] == "price_sim":
+                        to_append[e[0]+"_"+e[1]+"_price_sim"] = price_sim(item1,item2,e[0],e[1],15/100)
+                bigboi.append(to_append)     
+
+
+    sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[0]+"_"+e[1]+"_"+e[2]]/len(process_list) for e in process_list)), reverse=True) 
+    

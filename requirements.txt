@@ -25,7 +25,6 @@ pyasn1-modules==0.2.1
 pycparser==2.18
 python-scrapyd-api==2.1.2
 pytz==2018.4
-pywin32==223
 queuelib==1.5.0
 requests==2.18.4
 scrapyd==1.2.0

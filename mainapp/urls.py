@@ -14,7 +14,9 @@ urlpatterns = [
     path('crawlpage/edit_crawler/<int:id>/', views.editCrawler, name="edit_crawler"),
 
     path('comparatorpage/', views.comparatorpage, name='comparatorpage'),
-    path('comparatorpage/addcomparator', views.addComparatorForm, name="add_comparator_form")
+    path('comparatorpage/addcomparator', views.addComparatorForm, name="add_comparator_form"),
+    path('comparatorpage/launchcomparator/<int:id>', views.compare, name="launch_comparator")
+
 
 ]
 

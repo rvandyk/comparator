@@ -35,6 +35,8 @@ class Comparator(models.Model):
     model1 = models.ForeignKey(CrawlerModel, related_name="model1", on_delete=models.CASCADE)
     model2 = models.ForeignKey(CrawlerModel, related_name="model2", on_delete=models.CASCADE)
     fields = models.TextField()
+    result = models.TextField()
+    running = models.BooleanField(default=False)
 
 
 
