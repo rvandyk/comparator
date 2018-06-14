@@ -239,6 +239,7 @@ def format_file(f):
 def extract_prices(e):
     res = []
     for i in e['price']:
+        i = i.replace(" ", "")
         p = re.findall("\d+", str(i))[0]
         res.append(p)
     return res
@@ -258,6 +259,7 @@ def price_sim(item1, item2, f1, f2, rate):
         prices1 = extract_prices(item1)             
         prices2 = extract_prices(item2)
         res = 0 
+        nbcomp = 0
         for p1 in prices1:
             for p2 in prices2:
                 if float(p1) > (float(p2) - (float(p2)*rate)) and float(p1) < (float(p2) + (float(p2)*rate)):
@@ -299,11 +301,11 @@ def compare(request, id):
             if item1['titre'] and item2['title']:
                 for e in process_list:            
                     if e[0] == "string_sim":                        
-                        to_append[e[1]+"_"+e[2]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],60)   
-                        indicator = indicator*string_sim(item1,item2,e[1],e[2],60)                           
+                        to_append[e[1]+"_"+e[2]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],70)   
+                        indicator = indicator*string_sim(item1,item2,e[1],e[2],70)                           
                     elif e[0] == "price_sim":
-                        to_append[e[1]+"_"+e[2]+"_price_sim"] = price_sim(item1,item2,e[1],e[2],15) 
-                        indicator = indicator*price_sim(item1,item2,e[1],e[2],15)                                  
+                        to_append[e[1]+"_"+e[2]+"_price_sim"] = price_sim(item1,item2,e[1],e[2],15/100) 
+                        indicator = indicator*price_sim(item1,item2,e[1],e[2],15/100)                                  
                 
                 if indicator:
                     bigboi.append(to_append)    
@@ -311,5 +313,6 @@ def compare(request, id):
 
 
     sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
-    return HttpResponse(sortedboi)
+    return render(request, 'mainapp/comparedproducts.html', {'data' : sortedboi})
+
     
