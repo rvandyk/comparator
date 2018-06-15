@@ -35,43 +35,8 @@
 
             </td>
 
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editcrawler">Edit</button><a href="{% url 'mainapp:remove_crawler' e.id %}" role="button" class="btn btn-warning">Remove</a></td>
+        <td><a href="{% url 'mainapp:crawlpage' e.id %}" role="button" class="btn btn-primary">Edit</a><a href="{% url 'mainapp:remove_crawler' e.id %}" role="button" class="btn btn-warning">Remove</a></td>
         </tr>
-
-        <!-- edit modal -->
-        <div class="modal fade" id="editcrawler" tabindex="-1" role="dialog" aria-labelledby="editcrawler" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit crawler</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                    <form action="{% url 'mainapp:edit_crawler' e.id %}" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="name">Crawler name</label>
-                            <input type="text" class="form-control" name = "name" id="name" value="{{ e.name }}">
-                            <label for="url_sitemap">Sitemap URL</label>
-                            <input type="text" class="form-control" name = "url_sitemap" id="url_sitemap" value="{{ e.url }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="attributesJson">JSON Xpath</label>
-                            <textarea class="form-control" name="attributesJson" id="attributesJson" rows="3">{{ e.attributesJson }}</textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Edit</button>
-
-                    </form>
-                </div>
-
-
-            </div>
-        </div>
-    </div>
 
     {% endfor %}
 
@@ -88,6 +53,15 @@
     </button>
 
     <br><br>
+
+    {% if showmodal %}
+
+    <script type="text/javascript">
+        $(window).on('load',function(){
+            $('#addcrawler').modal('show');
+        });
+    </script>
+{% endif %}
 
 
 
@@ -121,38 +95,39 @@
 
 
 
-
-
-
-
     <!-- Modal -->
     <div class="modal fade" id="addcrawler" tabindex="-1" role="dialog" aria-labelledby="addcrawler" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add crawler</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title">{% if editid %}Edit{%else%}Add{%endif%} crawler</h5>                    
                 </div>
                 <div class="modal-body">
 
-                    <form action="{% url 'mainapp:add_crawler' %}" method="post">
+                    <form action="{% if editid %}{% url 'mainapp:crawlpage' editid %}{%else%}{% url 'mainapp:crawlpage'%}{%endif%}" method="post">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label for="name">Crawler name</label>
-                            <input type="text" class="form-control" name = "name" id="name" placeholder="MyCrawler">
-                            <label for="url_sitemap">Sitemap URL</label>
-                            <input type="text" class="form-control" name = "url_sitemap" id="url_sitemap" placeholder="http://...">
-                        </div>
-                        <div class="form-group">
-                            <label for="attributesJson">JSON Xpath</label>
-                            <textarea class="form-control" name="attributesJson" id="attributesJson" rows="3"></textarea>
-                        </div>
 
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        {% for field in form %}
+                            <div class="form-group">
+                                {% if field.errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                            {{ field.errors }}
+                                    </div>   
+                                {% endif %}    
+
+                                {{ field.label_tag }} {{ field }}
+                                {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}   
+                        
+                        <button type="submit" class="btn btn-primary">{% if editid %}Edit{%else%}Add{%endif%}</button>                       
+                        <a href="{% url 'mainapp:crawlpage' %}" role="button" class="btn btn-secondary float-right">Cancel</a> 
+                                          
 
                     </form>
+
                 </div>
 
 

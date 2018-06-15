@@ -1,0 +1,39 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Result
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Result</h1>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>Product 1</th>          
+          <th>Product 2</th>   
+          <th>Title similarity</th>
+          <th>Price similarity</th>     
+      </tr>
+    </thead>
+    <tbody>
+    {% for d in data %}
+        <tr>
+        <td><a href="{{d.item1.url}}">{{d.item1.titre.0}}</a></td>
+        <td><a href="{{d.item2.url}}">{{d.item2.title.0}}</a></td>    
+        <td><p>{{d.titre_title_string_sim}} %</p></td>
+        <td><p>{{d.price_price_price_sim}} %</p></td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+
+{% endblock %}

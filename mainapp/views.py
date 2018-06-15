@@ -19,6 +19,9 @@ from fuzzywuzzy import fuzz
 
 from mainapp.models import ScrapyItem
 from mainapp.models import CrawlerModel, Comparator
+from django.contrib import messages
+
+from mainapp.forms import CrawlForm
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
@@ -30,14 +33,55 @@ scrapyd = ScrapydAPI('http://localhost:6800')
 def index(request):
     return render(request,'mainapp/index.html')
 
-def crawlpage(request):
+def crawlpage(request, toedit=""):
     items = ScrapyItem.objects.all()
     models = CrawlerModel.objects.all()
     try :
         jobs = scrapyd.list_jobs('default')['running']
     except:
         jobs = []
-    return render(request, 'mainapp/crawlpage.html', {'items' : items,'models' : models,'jobs' : jobs })
+
+
+    if request.method == 'POST':       
+        form = CrawlForm(request.POST)
+        if form.is_valid():
+            url = request.POST['url']
+            name = request.POST['name']
+            attributesJson = request.POST['xpath']  
+                     
+            if CrawlerModel.objects.filter(id = int(toedit)).count():                
+                crawler = CrawlerModel.objects.get(id=toedit)                
+            else:
+                crawler = CrawlerModel()
+            crawler.url = url
+            crawler.attributesJson = attributesJson
+            crawler.name = name
+            crawler.save()
+                
+            return redirect('/crawlpage')
+
+        return render(request, 'mainapp/crawlpage.html',  {'form' : form, 'items' : items,'models' : models,'jobs' : jobs, 'showmodal' : True })
+
+    else:    
+
+        if toedit:
+            o = CrawlerModel.objects.get(id=toedit)
+            form = CrawlForm()
+            form['url'].initial = o.url
+            form['name'].initial = o.name
+            form['xpath'].initial = o.attributesJson
+
+            
+            return render(request, 'mainapp/crawlpage.html', {'editid' : toedit, 'form' : form, 'items' : items,'models' : models,'jobs' : jobs, 'showmodal' : True })
+
+        else:
+            form = CrawlForm()    
+        return render(request, 'mainapp/crawlpage.html', {'form' : form, 'items' : items,'models' : models,'jobs' : jobs })
+
+
+
+
+
 
 def comparatorpage(request):
     comparators = Comparator.objects.all()
@@ -90,46 +134,6 @@ def download_crawl(request, unique_id):
     response['Content-Disposition'] = 'attachment; filename=export.json'
     return response
 
-def is_valid_url(url):
-    validate = URLValidator()
-    try:
-        validate(url)  # check if url format is valid
-    except ValidationError:
-        return False
-
-    return True
-
-def is_valid_json(jsonfile):
-    try :
-        json.loads(jsonfile)
-    except ValueError as e:
-        return False
-
-    return True
-
-@require_http_methods(['POST'])
-def addCrawler(request):
-
-        url = request.POST['url_sitemap']
-        name = request.POST['name']
-        attributesJson = request.POST['attributesJson']
-        print(url)
-        print(name)
-        print(attributesJson)
-
-        if (not is_valid_url(url)) or (not is_valid_json(attributesJson)):
-            print(str(is_valid_json(attributesJson)))
-            print(str(is_valid_url(url)))
-            print('error')
-            return redirect('/crawlpage')
-
-        crawler = CrawlerModel()
-        crawler.url = url
-        crawler.attributesJson = attributesJson
-        crawler.name = name
-        crawler.save()
-        print('saved')
-        return redirect('/crawlpage')
 
 
 @require_http_methods(['POST'])
