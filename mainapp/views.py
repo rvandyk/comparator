@@ -22,6 +22,7 @@ from mainapp.models import CrawlerModel, Comparator
 from django.contrib import messages
 
 from mainapp.forms import CrawlForm
+from mainapp.forms import is_valid_url
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
@@ -85,11 +86,16 @@ def crawlpage(request, toedit=""):
 
 def comparatorpage(request):
     comparators = Comparator.objects.all()
-    return render(request, 'mainapp/comparatorpage.html', {'comparators' : comparators})
+    datas = ScrapyItem.objects.all()
+    return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators})
 
 def remove_crawler(request, id):
     model = CrawlerModel.objects.get(id=id).delete()
     return redirect('/crawlpage')
+
+def remove_comparator(request, id):
+    model = Comparator.objects.get(id=id).delete()
+    return redirect('/comparatorpage')
 
 def addComparatorForm(request):
     if 'crawler1' in request.POST and 'crawler2' in request.POST:
@@ -133,6 +139,14 @@ def download_crawl(request, unique_id):
     response = HttpResponse(item, content_type = 'application/json')
     response['Content-Disposition'] = 'attachment; filename=export.json'
     return response
+
+def remove_data(request, unique_id):
+    item = ScrapyItem.objects.filter(unique_id=unique_id)
+    item.delete()
+    return redirect('/crawlpage')
+
+    
+    
 
 
 
@@ -272,17 +286,28 @@ def price_sim(item1, item2, f1, f2, rate):
     else:
         return 0
 
-def compare(request, id):
 
-    comp = Comparator.objects.get(id=id)
+@require_http_methods(['POST'])
+def compare(request):
+
+    comp = Comparator.objects.get(id=request.POST['id'])
     process_list = ast.literal_eval(comp.fields)
+
+    
+    crawler1 = request.POST['data1']
+    crawler2 = request.POST['data2']
 
     
     #[["Keyword analysis", "titre", "title"], ["Price analysis", "price", "price"]]    
 
     #process_list = [('titre', 'titre', 'string_sim', 70), ('price', 'price', 'price_sim', 15/100)]
-    json1 = ScrapyItem.objects.get(crawler=comp.model1)
-    json2 = ScrapyItem.objects.get(crawler=comp.model2)
+    json1 = ScrapyItem.objects.get(id=crawler1)
+    json2 = ScrapyItem.objects.get(id=crawler2)
+
+    if comp.model1 != json1.crawler or comp.model2 != json2.crawler:        
+        comparators = Comparator.objects.all()
+        datas = ScrapyItem.objects.all()
+        return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators, 'errors': 'Dataset unreadable'})
     
 
 
@@ -302,7 +327,7 @@ def compare(request, id):
             item2 = ast.literal_eval(d2)
             indicator = 1
             to_append = {"item1" : item1, "item2": item2}
-            if item1['titre'] and item2['title']:
+            if item1['title'] and item2['title']:
                 for e in process_list:            
                     if e[0] == "string_sim":                        
                         to_append[e[1]+"_"+e[2]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],70)   

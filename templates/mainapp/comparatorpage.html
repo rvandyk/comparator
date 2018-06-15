@@ -10,6 +10,12 @@
 
 
 {% block content %}
+
+  {% if errors %}
+    <div class="alert alert-danger" role="alert">
+      {{ errors }}
+    </div> 
+    {% endif %}
     <h3>My Comparators</h3>
 
      <table class="table">
@@ -30,10 +36,25 @@
         <td>{{ comparator.name }}</td>
         <td>{{ comparator.model1.name }}</td>
         <td>{{ comparator.model2.name }}</td>
+        <form action="{% url 'mainapp:launch_comparator' %}" method="post">
+            {% csrf_token %}
+        <input type="hidden" name="id" value="{{comparator.id}}"> 
+        <td><select class="form-control" name="data1">
+            {% for data in datas %}
+                <option value="{{data.id}}">{{data.crawler.name}}-{{data.date}}</option>
+            {% endfor %}
+        </select></td>
+        <td><select class="form-control" name="data2">
+            {% for data in datas %}
+                <option value="{{data.id}}">{{data.crawler.name}}-{{data.date}}</option>
+            {% endfor %}
+        </select></td>
         <td>{% if comparator.running == True %}Running
           {% else %}
-          <a href="{% url 'mainapp:launch_comparator' comparator.id%}" role="button" class="btn btn-danger">Run!</a>
+          <input type="submit" role="button" class="btn btn-danger" value="Run!">
       {% endif %}</td>
+      <td><a href="{% url 'mainapp:remove_comparator' comparator.id %}" role="button" class="btn btn-warning">Remove</a></td>
+      </form>
 
         </tr>
     {% endfor %}
