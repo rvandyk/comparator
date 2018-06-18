@@ -18,11 +18,13 @@ import re
 from fuzzywuzzy import fuzz
 
 from mainapp.models import ScrapyItem
-from mainapp.models import CrawlerModel, Comparator
+from mainapp.models import CrawlerModel, Comparator, ComparedData
 from django.contrib import messages
 
 from mainapp.forms import CrawlForm
 from mainapp.forms import is_valid_url
+
+from django.core.paginator import Paginator
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
@@ -87,7 +89,8 @@ def crawlpage(request, toedit=""):
 def comparatorpage(request):
     comparators = Comparator.objects.all()
     datas = ScrapyItem.objects.all()
-    return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators})
+    compared_data = ComparedData.objects.all()
+    return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators, 'compared_data' : compared_data})
 
 def remove_crawler(request, id):
     model = CrawlerModel.objects.get(id=id).delete()
@@ -287,61 +290,101 @@ def price_sim(item1, item2, f1, f2, rate):
         return 0
 
 
-@require_http_methods(['POST'])
+
 def compare(request):
 
-    comp = Comparator.objects.get(id=request.POST['id'])
-    process_list = ast.literal_eval(comp.fields)
-
-    
-    crawler1 = request.POST['data1']
-    crawler2 = request.POST['data2']
-
-    
-    #[["Keyword analysis", "titre", "title"], ["Price analysis", "price", "price"]]    
-
-    #process_list = [('titre', 'titre', 'string_sim', 70), ('price', 'price', 'price_sim', 15/100)]
-    json1 = ScrapyItem.objects.get(id=crawler1)
-    json2 = ScrapyItem.objects.get(id=crawler2)
-
-    if comp.model1 != json1.crawler or comp.model2 != json2.crawler:        
-        comparators = Comparator.objects.all()
-        datas = ScrapyItem.objects.all()
-        return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators, 'errors': 'Dataset unreadable'})
+    if request.method == 'POST':
     
 
+        comp = Comparator.objects.get(id=request.POST['id'])
+        process_list = ast.literal_eval(comp.fields)
 
-    #json1 = open(file1, 'r')
-    #json2 = open(file2, 'r')
+        
+        crawler1 = request.POST['data1']
+        crawler2 = request.POST['data2']
 
-    data1 = ast.literal_eval(format_file(json1.data))
-    data2 = ast.literal_eval(format_file(json2.data))
+        
+        #[["Keyword analysis", "titre", "title"], ["Price analysis", "price", "price"]]    
+
+        #process_list = [('titre', 'titre', 'string_sim', 70), ('price', 'price', 'price_sim', 15/100)]
+        json1 = ScrapyItem.objects.get(id=crawler1)
+        json2 = ScrapyItem.objects.get(id=crawler2)
+
+        if comp.model1 != json1.crawler or comp.model2 != json2.crawler:        
+            comparators = Comparator.objects.all()
+            datas = ScrapyItem.objects.all()
+            return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators, 'errors': 'Dataset unreadable'})
+        
 
 
-    bigboi = []
-    i=0
-    for d1 in data1:      
-        item1 = ast.literal_eval(d1)    
-        for d2 in data2:   
-            i=i+1                 
-            item2 = ast.literal_eval(d2)
-            indicator = 1
-            to_append = {"item1" : item1, "item2": item2}
-            if item1['title'] and item2['title']:
-                for e in process_list:            
-                    if e[0] == "string_sim":                        
-                        to_append[e[1]+"_"+e[2]+"_string_sim"] = string_sim(item1,item2,e[1],e[2],70)   
-                        indicator = indicator*string_sim(item1,item2,e[1],e[2],70)                           
-                    elif e[0] == "price_sim":
-                        to_append[e[1]+"_"+e[2]+"_price_sim"] = price_sim(item1,item2,e[1],e[2],15/100) 
-                        indicator = indicator*price_sim(item1,item2,e[1],e[2],15/100)                                  
+        #json1 = open(file1, 'r')
+        #json2 = open(file2, 'r')
+
+        data1 = ast.literal_eval(format_file(json1.data))
+        data2 = ast.literal_eval(format_file(json2.data))
+
+
+        bigboi = []
+        i=0
+        for d1 in data1:      
+            item1 = ast.literal_eval(d1)    
+            for d2 in data2:   
+                i=i+1                 
+                item2 = ast.literal_eval(d2)
+                indicator = True
+                to_append = {"item1" : item1, "item2": item2}
+                if item1['title'] and item2['title']:
+                    for e in process_list:            
+                        if e[0] == "string_sim":        
+                            p = string_sim(item1,item2,e[1],e[2],60)                 
+                            to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
+                            if (p == 0):                       
+                                indicator = False                    
+                        elif e[0] == "price_sim":
+                            p = price_sim(item1,item2,e[1],e[2],15/100) 
+                            to_append[e[1]+"_"+e[2]+"_price_sim"] = p
+                            if (p == 0):                    
+                                indicator = False                                
+                    
+                    if indicator:
+                        bigboi.append(to_append)
                 
-                if indicator:
-                    bigboi.append(to_append)    
-            print(str(i) + "/" + str(len(data1)*len(data2))) 
+                print(str(i) + "/" + str(len(data1)*len(data2))) 
 
 
-    sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
-    return render(request, 'mainapp/comparedproducts.html', {'data' : sortedboi})
+        sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
+        o = ComparedData()
+        o.data = sortedboi
+        o.comparator = comp
+        o.item1 = json1
+        o.item2 = json2
+        o.save()
+        request.session['cResult'] = sortedboi
+
+    if request.method == 'GET':
+        sortedboi = request.session['cResult']
+
+    paginator = Paginator(sortedboi, 10)
+    page = request.GET.get('page')
+    plist = paginator.get_page(page)
+    
+    return render(request, 'mainapp/comparedproducts.html', {'data' : plist})
+
+
+
+def showComp(request, id):
+    c = ComparedData.objects.get(id=id)        
+    return render(request, 'mainapp/comparedproducts.html', {'data' : ast.literal_eval(c.data)})
+
+def removeComp(request,id):
+    c = ComparedData.objects.get(id=id)  
+    c.delete()
+    return redirect('/comparatorpage')
+    
+
+
+
+    
+
 
     

@@ -34,9 +34,16 @@ class Comparator(models.Model):
     name = models.TextField()
     model1 = models.ForeignKey(CrawlerModel, related_name="model1", on_delete=models.CASCADE)
     model2 = models.ForeignKey(CrawlerModel, related_name="model2", on_delete=models.CASCADE)
-    fields = models.TextField()
-    result = models.TextField()
+    fields = models.TextField()    
     running = models.BooleanField(default=False)
+
+class ComparedData(models.Model):
+    date = models.DateTimeField(default=timezone.now)
+    data = models.TextField()
+    comparator = models.ForeignKey(Comparator, on_delete=models.CASCADE)
+    item1 = models.ForeignKey(ScrapyItem, related_name="item1", on_delete=models.CASCADE)
+    item2 = models.ForeignKey(ScrapyItem, related_name="item2", on_delete=models.CASCADE)
+
 
 
 

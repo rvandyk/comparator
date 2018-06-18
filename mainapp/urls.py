@@ -17,7 +17,12 @@ urlpatterns = [
     path('comparatorpage/', views.comparatorpage, name='comparatorpage'),
     path('comparatorpage/addcomparator', views.addComparatorForm, name="add_comparator_form"),
     path('comparatorpage/launchcomparator', views.compare, name="launch_comparator"),
-    path('comparatorpage/remove_comparator/<int:id>', views.remove_comparator, name="remove_comparator")
+    path('comparatorpage/remove_comparator/<int:id>', views.remove_comparator, name="remove_comparator"),
+    path('comparatorpage/remove_comparator/<int:id>', views.remove_comparator, name="remove_comparator"),
+    path('comparatorpage/showcomp/<int:id>', views.showComp, name="showcomp"),
+    path('comparatorpage/removecomp/<int:id>', views.removeComp, name="removecomp")
+
+
 
 
 

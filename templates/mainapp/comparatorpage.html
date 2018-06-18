@@ -66,5 +66,40 @@
 
    <a href="{% url 'mainapp:add_comparator_form' %}" role="button" class="btn btn-primary">Add</a>
 
+   <br><br>
+
+   <h3>Compared Data</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Comparator</th>
+        <th>Data1</th>
+          <th>Data2</th>
+        <th>Date</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for c in compared_data %}
+        <tr>
+        <td>{{ c.comparator.name }}</td>
+        <td>{{ c.item1.crawler.name }} - {{ c.item1.date}}</td>
+        <td>{{ c.item2.crawler.name }} - {{ c.item2.date}}</td>
+            
+
+        <td>{{c.date}}</td>
+        <td><a href="{% url 'mainapp:showcomp' c.id %}" role="button" class="btn btn-primary">Show</a></td>
+        <td><a href="{% url 'mainapp:removecomp' c.id %}" role="button" class="btn btn-warning">Remove</a></td>
+        </tr>
+
+
+
+    {% endfor %}
+
+    </tbody>
+  </table>
+
 
 {% endblock %}
