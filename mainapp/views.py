@@ -332,18 +332,26 @@ def compare(request):
                 i=i+1                 
                 item2 = ast.literal_eval(d2)
                 indicator = True
-                to_append = {"item1" : item1, "item2": item2}               
+                to_append = {"item1" : item1, "item2": item2}   
+                score = 0            
                 for e in process_list:            
                     if e[0] == "string_sim":        
                         p = string_sim(item1,item2,e[1],e[2],60)                 
                         to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
                         if (p == 0):                       
-                            indicator = False                    
+                            indicator = False  
+                        
+                        score = score + p
+
                     elif e[0] == "price_sim":
                         p = price_sim(item1,item2,e[1],e[2],15/100) 
                         to_append[e[1]+"_"+e[2]+"_price_sim"] = p
                         if (p == 0):                    
-                            indicator = False                                
+                            indicator = False      
+                        score = score + p
+
+                score = score/len(process_list)  
+                to_append['score'] = score                        
                 
                 if indicator:
                     bigboi.append(to_append)
@@ -372,8 +380,11 @@ def compare(request):
 
 
 def showComp(request, id):
-    c = ComparedData.objects.get(id=id)        
-    return render(request, 'mainapp/comparedproducts.html', {'data' : ast.literal_eval(c.data)})
+    c = ComparedData.objects.get(id=id)   
+    paginator = Paginator(ast.literal_eval(c.data), 10)  
+    page = request.GET.get('page')
+    plist = paginator.get_page(page)   
+    return render(request, 'mainapp/comparedproducts.html', {'data' : plist})
 
 def removeComp(request,id):
     c = ComparedData.objects.get(id=id)  
