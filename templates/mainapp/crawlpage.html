@@ -1,0 +1,143 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Crawls
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Crawls</h1>
+{% endblock %}
+
+
+{% block content %}
+
+    <h3>My Crawlers</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Url</th>
+          <th></th>
+        <th> </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for e in models %}
+        <tr>
+        <td>{{ e.name }}</td>
+        <td>{{ e.url }}</td>
+            <td>
+                {% if e.running == True %}Running
+                    {% else %}
+                    <a href="{% url 'mainapp:launch_crawler' e.id %}" role="button" class="btn btn-danger">Run!</a>
+                {% endif %}
+
+            </td>
+
+        <td><a href="{% url 'mainapp:crawlpage' e.id %}" role="button" class="btn btn-primary">Edit</a></td>
+        <td><a href="{% url 'mainapp:remove_crawler' e.id %}" role="button" class="btn btn-warning">Remove</a></td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+
+
+    <br><br>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addcrawler">
+        Add crawler
+    </button>
+
+    <br><br>
+
+    {% if showmodal %}
+
+    <script type="text/javascript">
+        $(window).on('load',function(){
+            $('#addcrawler').modal('show');
+        });
+    </script>
+{% endif %}
+
+
+
+    <h3>Crawled data</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Crawler</th>
+        <th>Url</th>
+          <th>Date</th>
+        <th>File </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for e in items %}
+        <tr>
+        <td>{{ e.crawler.name }}</td>
+        <td>{{ e.crawler.url }}</td>
+            <td>{{ e.date }}</td>
+            
+
+        <td><a href="{% url 'mainapp:download_crawl' e.unique_id %}" role="button" class="btn btn-primary">Download</a></td>
+        <td><a href="{% url 'mainapp:remove_data' e.unique_id %}" role="button" class="btn btn-warning">Remove</a></td>
+        </tr>
+
+
+
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="addcrawler" tabindex="-1" role="dialog" aria-labelledby="addcrawler" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% if editid %}Edit{%else%}Add{%endif%} crawler</h5>                    
+                </div>
+                <div class="modal-body">
+
+                    <form action="{% if editid %}{% url 'mainapp:crawlpage' editid %}{%else%}{% url 'mainapp:crawlpage'%}{%endif%}" method="post">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="form-group">
+                                {% if field.errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                            {{ field.errors }}
+                                    </div>   
+                                {% endif %}    
+
+                                {{ field.label_tag }} {{ field }}
+                                {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}   
+                        
+                        <button type="submit" class="btn btn-primary">{% if editid %}Edit{%else%}Add{%endif%}</button>                       
+                        <a href="{% url 'mainapp:crawlpage' %}" role="button" class="btn btn-secondary float-right">Cancel</a> 
+                                          
+
+                    </form>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

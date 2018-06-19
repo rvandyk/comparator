@@ -1,0 +1,172 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Add Comparator
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Add Comparator</h1>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+  <form action="{% url 'mainapp:add_comparator_form' %}" method="post">
+                        {% csrf_token %}
+
+
+        <div class="form-group">
+
+    <label for="crawler1">Crawler1</label>
+    <select class="form-control" id="crawler1" name="crawler1">
+        {% for crawler in crawlers %}
+            <option {% if crawlersOK and crawler == crawler1 %}selected{% endif %}>{{ crawler.name }}</option>
+        {% endfor %}
+    </select>
+<br>
+        <label for="crawler2">Crawler2</label>
+    <select class="form-control" id="crawler2" name="crawler2">
+        {% for crawler in crawlers %}
+            <option {% if crawlersOK and crawler == crawler2 %}selected{% endif %}>{{ crawler.name }}</option>
+        {% endfor %}
+    </select>
+  </div>
+
+
+
+
+                        {% if crawlersOK %}
+                            <button type="submit" class="btn btn-primary">Change</button>
+  {% else %}<button type="submit" class="btn btn-primary">Next</button>
+  {% endif %}
+  </form>
+
+
+
+
+    {% if crawlersOK %}
+
+
+
+
+
+
+
+
+
+
+<form action="{% url 'mainapp:add_comparator_form' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="crawler1id" value="{{ crawler1.id }}" />
+<input type="hidden" name="crawler2id" value="{{ crawler2.id }}" />
+<input id="count" type="hidden" name="count" value="1" />
+
+ <div class="form-group">
+                            <label for="name">Comparator name</label>
+                            <input type="text" class="form-control" name = "name" id="name" placeholder="MyComparator">
+                        </div>
+
+<div class="row align-items-end" id="field1">
+<div class="col-3">
+   <label id="label01" for="typeselect1">Type</label>
+    <select class="form-control" id="typeselect1" name="typeselect1">
+            <option>string_sim</option>
+            <option>price_sim</option>
+    </select>
+</div>
+<div class="col-3">
+   <label id="label11" for="crawlerselect11">Crawler 1</label>
+    <select class="form-control" id="crawlerselect11" name="crawlerselect11">
+        {% for a1 in attributes1 %}
+            <option>{{ a1 }}</option>
+        {% endfor %}
+    </select>
+</div>
+<div id="endpoint1" class="col-3">
+<label id="label21" for="crawlerselect21">Crawler 2</label>
+    <select class="form-control" id="crawlerselect21" name="crawlerselect21">
+        {% for a2 in attributes2 %}
+            <option>{{ a2 }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+</div>
+<br>
+<button id="b1" class="btn btn-secondary add-more" type="button">Add field</button>
+<br>
+<br>
+
+<div class="row justify-content-md-center">
+<button type="submit" class="btn-lg btn-primary center">Create</button>
+</div>
+
+</form>
+
+{% endif %}
+
+
+
+
+
+
+
+    <script>
+$(document).ready(function(){
+    var next = 1;
+    $(".add-more").click(function(e){
+        e.preventDefault();
+        var addto = "#field" + next;
+        var addRemove = '#endpoint' + next;
+        console.log(addto);
+        console.log(addRemove);
+        next = next + 1;
+        var newIn = '<br><div class="row align-items-end" id="field'+next+'">' +
+        '<div class="col-3">' +
+            '   <label id="label0'+next+'" for="typeselect'+next+'">Type</label>' +
+            '    <select class="form-control" id="typeselect'+next+'1" name="typeselect'+next+'">' +
+            '            <option>string_sim</option>' +
+            '            <option>price_sim</option>' +
+            '    </select>' +
+            '</div>'+
+            '<div class="col-3"><label id="label1' + next + '" for="crawlerselect1' + next + '">Crawler1</label>' +
+            '    <select class="form-control" id="crawlerselect1' + next +' " name="crawlerselect1' + next +'">' +
+            '        {% for a1 in attributes1 %}'+
+                '            <option>{{ a1 }}</option>'+
+                '        {% endfor %}' +
+            '    </select></div>' +
+            '<div id="endpoint'+next+'" class="col-3"><label id="label2' + next + '" for="crawlerselect2' + next + '">Crawler2</label>' +
+            '    <select class="form-control" id="crawlerselect2' + next +'" name="crawlerselect2' + next +'">' +
+            '        {% for a2 in attributes2 %}'+
+                '            <option>{{ a2 }}</option>'+
+                '        {% endfor %}' +
+            '    </select></div></div>';
+
+        var newInput = $(newIn);
+        var removeBtn = '<div class="col"><button id="remove' + (next - 1) + '" class="btn btn-danger remove-me pull-bottom" >-</button></div>';
+        var removeButton = $(removeBtn);
+        $(addto).after(newInput);
+        $(addRemove).after(removeButton);
+        $("#field" + next).attr('data-source',$(addto).attr('data-source'));
+        $("#count").val(next);
+
+            $('.remove-me').click(function(e){
+                e.preventDefault();
+                var fieldNum = this.id.charAt(this.id.length-1);
+                $("#field"+fieldNum).remove();
+
+            });
+    });
+
+
+
+});
+</script>
+
+
+
+
+{% endblock %}

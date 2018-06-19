@@ -1,0 +1,105 @@
+{% extends 'mainapp/base_dashboard.html' %}
+
+{% block title %}
+    Comparator
+{% endblock %}
+
+{% block titlebar %}
+    <h1 class="h2">Comparator</h1>
+{% endblock %}
+
+
+{% block content %}
+
+  {% if errors %}
+    <div class="alert alert-danger" role="alert">
+      {{ errors }}
+    </div> 
+    {% endif %}
+    <h3>My Comparators</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Crawler1</th>
+          <th>Crawler2</th>
+          <th>Data1</th>
+          <th>Data2</th>
+          <th></th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for comparator in comparators %}
+        <tr>
+        <td>{{ comparator.name }}</td>
+        <td>{{ comparator.model1.name }}</td>
+        <td>{{ comparator.model2.name }}</td>
+        <form action="{% url 'mainapp:launch_comparator' %}" method="post">
+            {% csrf_token %}
+        <input type="hidden" name="id" value="{{comparator.id}}"> 
+        <td><select class="form-control" name="data1">
+            {% for data in datas %}
+                <option value="{{data.id}}">{{data.crawler.name}}-{{data.date}}</option>
+            {% endfor %}
+        </select></td>
+        <td><select class="form-control" name="data2">
+            {% for data in datas %}
+                <option value="{{data.id}}">{{data.crawler.name}}-{{data.date}}</option>
+            {% endfor %}
+        </select></td>
+        <td>{% if comparator.running == True %}Running
+          {% else %}
+          <input type="submit" role="button" class="btn btn-danger" value="Run!">
+      {% endif %}</td>
+      <td><a href="{% url 'mainapp:remove_comparator' comparator.id %}" role="button" class="btn btn-warning">Remove</a></td>
+      </form>
+
+        </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+    <br><br>
+
+   <a href="{% url 'mainapp:add_comparator_form' %}" role="button" class="btn btn-primary">Add</a>
+
+   <br><br>
+
+   <h3>Compared Data</h3>
+
+     <table class="table">
+    <thead>
+      <tr>
+        <th>Comparator</th>
+        <th>Data1</th>
+          <th>Data2</th>
+        <th>Date</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for c in compared_data %}
+        <tr>
+        <td>{{ c.comparator.name }}</td>
+        <td>{{ c.item1.crawler.name }} - {{ c.item1.date}}</td>
+        <td>{{ c.item2.crawler.name }} - {{ c.item2.date}}</td>
+            
+
+        <td>{{c.date}}</td>
+        <td><a href="{% url 'mainapp:showcomp' c.id %}" role="button" class="btn btn-primary">Show</a></td>
+        <td><a href="{% url 'mainapp:removecomp' c.id %}" role="button" class="btn btn-warning">Remove</a></td>
+        </tr>
+
+
+
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+
+{% endblock %}
