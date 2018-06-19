@@ -36,6 +36,6 @@ class ScrapyAppPipeline(object):
 
 
     def process_item(self, item, spider):
-        if item['price']:
+        if item['price'] and item['title']:
             self.items.append(json.dumps(dict(item)))
         return item

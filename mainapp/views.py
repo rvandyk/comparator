@@ -332,22 +332,21 @@ def compare(request):
                 i=i+1                 
                 item2 = ast.literal_eval(d2)
                 indicator = True
-                to_append = {"item1" : item1, "item2": item2}
-                if item1['title'] and item2['title']:
-                    for e in process_list:            
-                        if e[0] == "string_sim":        
-                            p = string_sim(item1,item2,e[1],e[2],60)                 
-                            to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
-                            if (p == 0):                       
-                                indicator = False                    
-                        elif e[0] == "price_sim":
-                            p = price_sim(item1,item2,e[1],e[2],15/100) 
-                            to_append[e[1]+"_"+e[2]+"_price_sim"] = p
-                            if (p == 0):                    
-                                indicator = False                                
-                    
-                    if indicator:
-                        bigboi.append(to_append)
+                to_append = {"item1" : item1, "item2": item2}               
+                for e in process_list:            
+                    if e[0] == "string_sim":        
+                        p = string_sim(item1,item2,e[1],e[2],60)                 
+                        to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
+                        if (p == 0):                       
+                            indicator = False                    
+                    elif e[0] == "price_sim":
+                        p = price_sim(item1,item2,e[1],e[2],15/100) 
+                        to_append[e[1]+"_"+e[2]+"_price_sim"] = p
+                        if (p == 0):                    
+                            indicator = False                                
+                
+                if indicator:
+                    bigboi.append(to_append)
                 
                 print(str(i) + "/" + str(len(data1)*len(data2))) 
 
