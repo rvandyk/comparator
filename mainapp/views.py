@@ -44,16 +44,16 @@ def crawlpage(request, toedit=""):
     except:
         jobs = []
 
-
+        
     if request.method == 'POST':       
         form = CrawlForm(request.POST)
         if form.is_valid():
             url = request.POST['url']
             name = request.POST['name']
             attributesJson = request.POST['xpath']  
-                     
-            if CrawlerModel.objects.filter(id = int(toedit)).count():                
-                crawler = CrawlerModel.objects.get(id=toedit)                
+            if toedit:         
+                if CrawlerModel.objects.filter(id = int(toedit)).count():                
+                    crawler = CrawlerModel.objects.get(id=toedit)                
             else:
                 crawler = CrawlerModel()
             crawler.url = url
