@@ -15,7 +15,7 @@ class ScrapyItem(models.Model):
     unique_id = models.CharField(max_length=100, null=True)
     data = models.TextField()
     date = models.DateTimeField(default=timezone.now)
-    crawler = models.OneToOneField(CrawlerModel, on_delete=models.CASCADE)
+    crawler = models.OneToOneField(CrawlerModel, related_name='crawler', on_delete=models.CASCADE)
 
     @property
     def to_dict(self):

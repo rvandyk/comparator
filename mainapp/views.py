@@ -12,6 +12,7 @@ from django.http import HttpResponse
 import json
 import requests
 import ast
+import time
 
 import json 
 import re
@@ -413,13 +414,43 @@ class matchTask(APIView):
     """
     Returns all matching products
     """
-    url = request.POST['url_dille']
+    url = request.POST['url']
     comparator_list = ast.literal_eval(request.POST['comparator_list'])
+    result = []
 
     for i in comparator_list:
-        compare(i)
+        data = ComparedData.objects.get(id=i)
+        data_l = ast.literal_eval(data.data)
+        for x in data_l:
+            if x['item1']['url'] == url:
+                result.append(x)
 
-    return Response({"success": True, "content": "Hello World!"})
+
+    return Response({"success": True, "content": result})
+
+
+class update(APIView):
+    """
+    Updates all crawled and compares datasets    """
+
+    def get(self, request, format=None):
+
+        #Crawlers
+        crawlers = CrawlerModel.objects.all()
+        for c in crawlers:
+            to_del = ScrapyItem.objects.filter(crawler=c)
+            to_del.delete()
+            post_data = {'url': c.url, 'attributesJson' : c.attributesJson, 'id' : c.id}
+            requests.post('http://localhost:8000/api/crawl', data=post_data)
+            c.running = True
+            c.save()
+            
+
+        #Comparators
+
+
+
+
  
 
 
