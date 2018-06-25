@@ -9,12 +9,13 @@ class CrawlerModel(models.Model):
     url = models.TextField()
     attributesJson = models.TextField()
     running = models.BooleanField(default=False)
+    
 
 class ScrapyItem(models.Model):
     unique_id = models.CharField(max_length=100, null=True)
     data = models.TextField()
     date = models.DateTimeField(default=timezone.now)
-    crawler = models.ForeignKey(CrawlerModel, on_delete=models.CASCADE)
+    crawler = models.OneToOneField(CrawlerModel, on_delete=models.CASCADE)
 
     @property
     def to_dict(self):
@@ -38,9 +39,8 @@ class Comparator(models.Model):
 class ComparedData(models.Model):
     date = models.DateTimeField(default=timezone.now)
     data = models.TextField()
-    comparator = models.ForeignKey(Comparator, on_delete=models.CASCADE)
-    item1 = models.ForeignKey(ScrapyItem, related_name="item1", on_delete=models.CASCADE)
-    item2 = models.ForeignKey(ScrapyItem, related_name="item2", on_delete=models.CASCADE)
+    comparator = models.OneToOneField(Comparator, on_delete=models.CASCADE)
+    
 
 
 

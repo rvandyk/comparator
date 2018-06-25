@@ -27,7 +27,7 @@ from mainapp.forms import is_valid_url
 from django.core.paginator import Paginator
 
 from rest_framework import status 
-from rest_framework.decorators import api_view 
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
  
@@ -299,91 +299,60 @@ def price_sim(item1, item2, f1, f2, rate):
 
 
 
-def compare(request):
-
-    if request.method == 'POST':
-    
-
-        comp = Comparator.objects.get(id=request.POST['id'])
-        process_list = ast.literal_eval(comp.fields)
-
+def compare(idcomp):
+  
+    comp = Comparator.objects.get(id=idcomp)
+    process_list = ast.literal_eval(comp.fields)
         
-        crawler1 = request.POST['data1']
-        crawler2 = request.POST['data2']
+    json1 = ScrapyItem.objects.get(crawler=comp.model1.id)
+    json2 = ScrapyItem.objects.get(crawler=comp.model2.id) 
+       
+    data1 = ast.literal_eval(format_file(json1.data))
+    data2 = ast.literal_eval(format_file(json2.data))
 
-        
-        #[["Keyword analysis", "titre", "title"], ["Price analysis", "price", "price"]]    
+    bigboi = []
+    i=0
+    for d1 in data1:      
+        item1 = ast.literal_eval(d1)    
+        for d2 in data2:   
+            i=i+1                 
+            item2 = ast.literal_eval(d2)
+            indicator = True
+            to_append = {"item1" : item1, "item2": item2}   
+            score = 0            
+            for e in process_list:            
+                if e[0] == "string_sim":        
+                    p = string_sim(item1,item2,e[1],e[2],60)                 
+                    to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
+                    if (p == 0):                       
+                        indicator = False  
+                    
+                    score = score + p
 
-        #process_list = [('titre', 'titre', 'string_sim', 70), ('price', 'price', 'price_sim', 15/100)]
-        json1 = ScrapyItem.objects.get(id=crawler1)
-        json2 = ScrapyItem.objects.get(id=crawler2)
+                elif e[0] == "price_sim":
+                    p = price_sim(item1,item2,e[1],e[2],15/100) 
+                    to_append[e[1]+"_"+e[2]+"_price_sim"] = p
+                    if (p == 0):                    
+                        indicator = False      
+                    score = score + p
 
-        if comp.model1 != json1.crawler or comp.model2 != json2.crawler:        
-            comparators = Comparator.objects.all()
-            datas = ScrapyItem.objects.all()
-            return render(request, 'mainapp/comparatorpage.html', {'datas': datas, 'comparators' : comparators, 'errors': 'Dataset unreadable'})
-        
-
-
-        #json1 = open(file1, 'r')
-        #json2 = open(file2, 'r')
-
-        data1 = ast.literal_eval(format_file(json1.data))
-        data2 = ast.literal_eval(format_file(json2.data))
-
-
-        bigboi = []
-        i=0
-        for d1 in data1:      
-            item1 = ast.literal_eval(d1)    
-            for d2 in data2:   
-                i=i+1                 
-                item2 = ast.literal_eval(d2)
-                indicator = True
-                to_append = {"item1" : item1, "item2": item2}   
-                score = 0            
-                for e in process_list:            
-                    if e[0] == "string_sim":        
-                        p = string_sim(item1,item2,e[1],e[2],60)                 
-                        to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
-                        if (p == 0):                       
-                            indicator = False  
-                        
-                        score = score + p
-
-                    elif e[0] == "price_sim":
-                        p = price_sim(item1,item2,e[1],e[2],15/100) 
-                        to_append[e[1]+"_"+e[2]+"_price_sim"] = p
-                        if (p == 0):                    
-                            indicator = False      
-                        score = score + p
-
-                score = score/len(process_list)  
-                to_append['score'] = score                        
-                
-                if indicator:
-                    bigboi.append(to_append)
-                
-                print(str(i) + "/" + str(len(data1)*len(data2))) 
+            score = score/len(process_list)  
+            to_append['score'] = score                        
+            
+            if indicator:
+                bigboi.append(to_append)
+            
+            print(str(i) + "/" + str(len(data1)*len(data2))) 
 
 
-        sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
-        o = ComparedData()
-        o.data = sortedboi
-        o.comparator = comp
-        o.item1 = json1
-        o.item2 = json2
-        o.save()
-        request.session['cResult'] = sortedboi
+    sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
+    o = ComparedData()
+    o.data = sortedboi
+    o.comparator = comp
+    o.item1 = json1
+    o.item2 = json2
+    o.save()
 
-    if request.method == 'GET':
-        sortedboi = request.session['cResult']
-
-    paginator = Paginator(sortedboi, 10)
-    page = request.GET.get('page')
-    plist = paginator.get_page(page)
-    
-    return render(request, 'mainapp/comparedproducts.html', {'data' : plist})
 
 
 
@@ -435,6 +404,22 @@ class ScrapyItemViewSet(viewsets.ModelViewSet):
     serializer_class = ScrapyItemSerializer
 
 
+
+class matchTask(APIView):
+  """
+  New maching task
+  """
+  def post(self, request, format=None):
+    """
+    Returns all matching products
+    """
+    url = request.POST['url_dille']
+    comparator_list = ast.literal_eval(request.POST['comparator_list'])
+
+    for i in comparator_list:
+        compare(i)
+
+    return Response({"success": True, "content": "Hello World!"})
  
 
 
