@@ -1,8 +1,6 @@
 from django.db import models
 import json
-from django.utils import timezone
-
-
+from django.utils import timezone   
 
 # Create your models here.
 

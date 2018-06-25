@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
 from mainapp import urls
+from rest_framework.documentation import include_docs_urls
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mainapp.urls'))
+    path('', include('mainapp.urls')),
+    url(r'docs/', include_docs_urls(title='Comparator Module API', public=False))
 ]

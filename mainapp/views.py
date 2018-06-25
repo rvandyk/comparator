@@ -26,6 +26,14 @@ from mainapp.forms import is_valid_url
 
 from django.core.paginator import Paginator
 
+from rest_framework import status 
+from rest_framework.decorators import api_view 
+from rest_framework.response import Response
+from rest_framework import viewsets
+ 
+from mainapp.serializers import CrawlerSerializer, ComparatorSerializer
+from mainapp.serializers import ScrapyItemSerializer, ComparedDataSerializer
+
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
 
@@ -390,7 +398,45 @@ def removeComp(request,id):
     c = ComparedData.objects.get(id=id)  
     c.delete()
     return redirect('/comparatorpage')
-    
+
+class CrawlerViewSet(viewsets.ModelViewSet):
+
+    """
+    A Crawler is a model describing a crawling robot (its name, its target, and the data to extract)
+    """
+ 
+    queryset = CrawlerModel.objects.all() 
+    serializer_class = CrawlerSerializer
+
+class ComparatorViewSet(viewsets.ModelViewSet):
+
+    """
+    A Comparator is a model describing how to match 2 datasets 
+    """
+ 
+    queryset = Comparator.objects.all() 
+    serializer_class = ComparatorSerializer
+
+
+class ComparedDataViewSet(viewsets.ModelViewSet):
+    """
+    Result of all the matches giving a comparator and 2 datasets
+    """
+ 
+    queryset = ComparedData.objects.all() 
+    serializer_class = ComparedDataSerializer
+
+class ScrapyItemViewSet(viewsets.ModelViewSet):
+    """
+    Dataset produced by crawlers
+    """
+ 
+    queryset = ScrapyItem.objects.all() 
+    serializer_class = ScrapyItemSerializer
+
+
+ 
+
 
 
 

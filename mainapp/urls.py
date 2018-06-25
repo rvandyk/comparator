@@ -1,6 +1,17 @@
 from django.urls import path
-
 from . import views
+from rest_framework import routers
+from django.conf.urls import url, include
+
+
+router = routers.DefaultRouter()
+router.register(r'crawlers', views.CrawlerViewSet)
+router.register(r'comparator', views.ComparatorViewSet)
+router.register(r'item', views.ScrapyItemViewSet)
+router.register(r'data', views.ComparedDataViewSet)
+
+
+
 
 app_name = 'mainapp'
 urlpatterns = [
@@ -20,7 +31,11 @@ urlpatterns = [
     path('comparatorpage/remove_comparator/<int:id>', views.remove_comparator, name="remove_comparator"),
     path('comparatorpage/remove_comparator/<int:id>', views.remove_comparator, name="remove_comparator"),
     path('comparatorpage/showcomp/<int:id>', views.showComp, name="showcomp"),
-    path('comparatorpage/removecomp/<int:id>', views.removeComp, name="removecomp")
+    path('comparatorpage/removecomp/<int:id>', views.removeComp, name="removecomp"),
+    
+
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 
 
