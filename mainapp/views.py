@@ -305,54 +305,57 @@ def compare(idcomp):
     comp = Comparator.objects.get(id=idcomp)
     process_list = ast.literal_eval(comp.fields)
         
-    json1 = ScrapyItem.objects.get(crawler=comp.model1.id)
-    json2 = ScrapyItem.objects.get(crawler=comp.model2.id) 
+    json1 = ScrapyItem.objects.get(crawler=comp.model1)
+    json2 = ScrapyItem.objects.get(crawler=comp.model2) 
+
+    if json1 and json2:        
        
-    data1 = ast.literal_eval(format_file(json1.data))
-    data2 = ast.literal_eval(format_file(json2.data))
+        data1 = ast.literal_eval(format_file(json1.data))
+        data2 = ast.literal_eval(format_file(json2.data))
 
-    bigboi = []
-    i=0
-    for d1 in data1:      
-        item1 = ast.literal_eval(d1)    
-        for d2 in data2:   
-            i=i+1                 
-            item2 = ast.literal_eval(d2)
-            indicator = True
-            to_append = {"item1" : item1, "item2": item2}   
-            score = 0            
-            for e in process_list:            
-                if e[0] == "string_sim":        
-                    p = string_sim(item1,item2,e[1],e[2],60)                 
-                    to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
-                    if (p == 0):                       
-                        indicator = False  
-                    
-                    score = score + p
+        bigboi = []
+        i=0
+        for d1 in data1:      
+            item1 = ast.literal_eval(d1)    
+            for d2 in data2:   
+                i=i+1                 
+                item2 = ast.literal_eval(d2)
+                indicator = True
+                to_append = {"item1" : item1, "item2": item2}   
+                score = 0            
+                for e in process_list:            
+                    if e[0] == "string_sim":        
+                        p = string_sim(item1,item2,e[1],e[2],60)                 
+                        to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
+                        if (p == 0):                       
+                            indicator = False  
+                        
+                        score = score + p
 
-                elif e[0] == "price_sim":
-                    p = price_sim(item1,item2,e[1],e[2],15/100) 
-                    to_append[e[1]+"_"+e[2]+"_price_sim"] = p
-                    if (p == 0):                    
-                        indicator = False      
-                    score = score + p
+                    elif e[0] == "price_sim":
+                        p = price_sim(item1,item2,e[1],e[2],15/100) 
+                        to_append[e[1]+"_"+e[2]+"_price_sim"] = p
+                        if (p == 0):                    
+                            indicator = False      
+                        score = score + p
 
-            score = score/len(process_list)  
-            to_append['score'] = score                        
-            
-            if indicator:
-                bigboi.append(to_append)
-            
-            print(str(i) + "/" + str(len(data1)*len(data2))) 
+                score = score/len(process_list)  
+                to_append['score'] = score                        
+                
+                if indicator:
+                    bigboi.append(to_append)
+                
+                print(str(i) + "/" + str(len(data1)*len(data2))) 
 
 
-    sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
-    o = ComparedData()
-    o.data = sortedboi
-    o.comparator = comp
-    o.item1 = json1
-    o.item2 = json2
-    o.save()
+        sortedboi = sorted(bigboi, key=lambda k: (sum(k[e[1]+"_"+e[2]+"_"+e[0]]/len(process_list) for e in process_list)), reverse=True) 
+        o = ComparedData()
+        o.data = sortedboi
+        o.comparator = comp
+        o.item1 = json1
+        o.item2 = json2
+        o.save()
+    
 
 
 
@@ -419,11 +422,12 @@ class matchTask(APIView):
     result = []
 
     for i in comparator_list:
-        data = ComparedData.objects.get(id=i)
-        data_l = ast.literal_eval(data.data)
-        for x in data_l:
-            if x['item1']['url'] == url:
-                result.append(x)
+        data = ComparedData.objects.filter(id=i)
+        if(data):            
+            data_l = ast.literal_eval(data.data)
+            for x in data_l:
+                if x['item1']['url'] == url:
+                    result.append(x)
 
 
     return Response({"success": True, "content": result})
@@ -434,19 +438,39 @@ class update(APIView):
     Updates all crawled and compares datasets    """
 
     def get(self, request, format=None):
-
+        
         #Crawlers
         crawlers = CrawlerModel.objects.all()
         for c in crawlers:
             to_del = ScrapyItem.objects.filter(crawler=c)
-            to_del.delete()
+            if(to_del):
+                to_del.delete()
             post_data = {'url': c.url, 'attributesJson' : c.attributesJson, 'id' : c.id}
             requests.post('http://localhost:8000/api/crawl', data=post_data)
             c.running = True
             c.save()
-            
+        
+
+        
+        crawlok = False
+        while(not crawlok):
+            crawlers = CrawlerModel.objects.all()
+            crawlok = True
+            for c in crawlers:
+                if c.running == True:
+                    crawlok = False        
+
 
         #Comparators
+        comparators = Comparator.objects.all()
+        for c in comparators:
+            to_del = ComparedData.objects.filter(comparator=c)
+            if(to_del):
+                to_del.delete()
+            
+            compare(c.id)
+            
+        return Response({"success": True, "content": "cuck"})
 
 
 
