@@ -424,7 +424,7 @@ class matchTask(APIView):
     for i in comparator_list:
         data = ComparedData.objects.filter(id=i)
         if(data):            
-            data_l = ast.literal_eval(data.data)
+            data_l = ast.literal_eval(data[0].data)
             for x in data_l:
                 if x['item1']['url'] == url:
                     result.append(x)
