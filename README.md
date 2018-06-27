@@ -39,8 +39,8 @@ A comparator is an application that will compare 2 crawler results. It is define
 ---
 #### Processing rules
 For the moment, two rules are available:
-* string_sim : compares the similarity between two texts (titles, descriptions, etc)
-* price_sim : compares the similarity of prices, allowing a 15% difference
+* string\_sim : compares the similarity between two texts (titles, descriptions, etc)
+* price\_sim : compares the similarity of prices, allowing a 15% difference
 ---
 Once a comparator is defined, you can run it by loading 2 crawler results in it (one for crawler1 and one for crawler2), and obtain a json containing all matching entries.
 
