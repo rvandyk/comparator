@@ -423,14 +423,33 @@ class matchTask(APIView):
 
     for i in comparator_list:
         data = ComparedData.objects.filter(id=i)
-        if(data):            
+        if(data):                     
             data_l = ast.literal_eval(data[0].data)
             for x in data_l:
                 if x['item1']['url'] == url:
                     result.append(x)
-
-
     return Response({"success": True, "content": result})
+
+class findURL(APIView):
+    def get(self, request, format=None):
+        c1 = request.GET['c1']
+        c2 = request.GET['c2']
+        data1 = ComparedData.objects.get(id=c1)
+        data2 = ComparedData.objects.get(id=c2)
+        data1_l = ast.literal_eval(data1.data)
+        data2_l = ast.literal_eval(data2.data)
+
+        for i in data1_l:            
+            if int(i['title_title_string_sim']) > 60:                
+                url = i['item1']['url']
+                for j in data2_l:
+                    if j['item1']['url'] == url and int(j['title_title_string_sim']) > 60:                        
+                        return Response({"success": True, "content": url})
+        return Response({"success": True, "content": 'None'})
+
+
+
+
 
 
 class update(APIView):
