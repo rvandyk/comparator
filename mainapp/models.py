@@ -4,12 +4,23 @@ from django.utils import timezone
 
 # Create your models here.
 
+
+
 class CrawlerModel(models.Model):
     name = models.TextField()
     url = models.TextField()
     attributesJson = models.TextField()
     running = models.BooleanField(default=False)
-    
+
+class MainCrawler(CrawlerModel):
+
+    def save(self, *args, **kwargs):
+        if MainCrawler.objects.exists() and not self.pk:
+        # if you'll not check for self.pk 
+        # then error will also raised in update of exists model
+            raise ValidationError('There can be only one MainCrawler instance')
+        return super(MainCrawler, self).save(*args, **kwargs)
+
 
 class ScrapyItem(models.Model):
     unique_id = models.CharField(max_length=100, null=True)
@@ -31,7 +42,7 @@ class ScrapyItem(models.Model):
 
 class Comparator(models.Model):
     name = models.TextField()
-    model1 = models.ForeignKey(CrawlerModel, related_name="model1", on_delete=models.CASCADE)
+    maincrawler = models.ForeignKey(MainCrawler, related_name="maincrawler", on_delete=models.CASCADE)
     model2 = models.ForeignKey(CrawlerModel, related_name="model2", on_delete=models.CASCADE)
     fields = models.TextField()    
     running = models.BooleanField(default=False)

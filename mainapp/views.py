@@ -19,7 +19,7 @@ import re
 from fuzzywuzzy import fuzz
 
 from mainapp.models import ScrapyItem
-from mainapp.models import CrawlerModel, Comparator, ComparedData
+from mainapp.models import CrawlerModel, Comparator, ComparedData, MainCrawler
 from django.contrib import messages
 
 from mainapp.forms import CrawlForm
@@ -33,7 +33,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets
  
 from mainapp.serializers import CrawlerSerializer, ComparatorSerializer
-from mainapp.serializers import ScrapyItemSerializer, ComparedDataSerializer
+from mainapp.serializers import ScrapyItemSerializer, ComparedDataSerializer, MainCrawlerSerializer
 
 # connect scrapyd service
 scrapyd = ScrapydAPI('http://localhost:6800')
@@ -305,7 +305,7 @@ def compare(idcomp):
     comp = Comparator.objects.get(id=idcomp)
     process_list = ast.literal_eval(comp.fields)
         
-    json1 = ScrapyItem.objects.get(crawler=comp.model1)
+    json1 = ScrapyItem.objects.get(crawler=comp.maincrawler)
     json2 = ScrapyItem.objects.get(crawler=comp.model2) 
 
     if json1 and json2:        
@@ -381,6 +381,17 @@ class CrawlerViewSet(viewsets.ModelViewSet):
     queryset = CrawlerModel.objects.all() 
     serializer_class = CrawlerSerializer
 
+class MainCrawlerViewSet(viewsets.ModelViewSet):
+
+    """
+    A Crawler is a model describing a crawling robot (its name, its target, and the data to extract)
+    """
+ 
+    queryset = MainCrawler.objects.all() 
+    serializer_class = MainCrawlerSerializer
+
+
+
 class ComparatorViewSet(viewsets.ModelViewSet):
 
     """
@@ -454,10 +465,20 @@ class findURL(APIView):
 
 class update(APIView):
     """
-    Updates all crawled and compares datasets    """
+    Updates all crawled data and compares datasets    """
 
     def get(self, request, format=None):
         
+        #MainCrawler
+        main = MainCrawler.objects.all()[0]
+        main_del = ScrapyItem.objects.filter(crawler=main)
+        if(main_del):
+                main_del.delete()
+        post_data = {'url': main.url, 'attributesJson' : main.attributesJson, 'id' : main.id}
+        requests.post('http://localhost:8000/api/crawl', data=post_data)
+        main.running = True
+        main.save()
+
         #Crawlers
         crawlers = CrawlerModel.objects.all()
         for c in crawlers:
@@ -474,9 +495,10 @@ class update(APIView):
         crawlok = False
         while(not crawlok):
             crawlers = CrawlerModel.objects.all()
+            main = MainCrawler.objects.all()[0]
             crawlok = True
             for c in crawlers:
-                if c.running == True:
+                if c.running == True or main.running == True:
                     crawlok = False        
 
 

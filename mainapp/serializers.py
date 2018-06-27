@@ -1,10 +1,16 @@
 from rest_framework import serializers 
-from mainapp.models import CrawlerModel, Comparator, ScrapyItem, ComparedData
+from mainapp.models import CrawlerModel, MainCrawler, Comparator, ScrapyItem, ComparedData
  
 class CrawlerSerializer(serializers.ModelSerializer):
  
     class Meta: 
         model = CrawlerModel
+        fields = '__all__'
+
+class MainCrawlerSerializer(serializers.ModelSerializer):
+ 
+    class Meta: 
+        model = MainCrawler
         fields = '__all__'
 
 class ComparatorSerializer(serializers.ModelSerializer):

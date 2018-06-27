@@ -9,6 +9,7 @@ router.register(r'crawlers', views.CrawlerViewSet)
 router.register(r'comparator', views.ComparatorViewSet)
 router.register(r'item', views.ScrapyItemViewSet)
 router.register(r'data', views.ComparedDataViewSet)
+router.register(r'maincrawler', views.MainCrawlerViewSet)
 
 
 
