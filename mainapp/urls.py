@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from rest_framework.authtoken import views as viewstoken
 from rest_framework import routers
 from django.conf.urls import url, include
 
@@ -37,6 +38,7 @@ urlpatterns = [
 
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', viewstoken.obtain_auth_token),
     url(r'^matchtask', views.matchTask.as_view()),
     url(r'^findURL', views.findURL.as_view()),
     url(r'^update', views.update.as_view())
@@ -47,4 +49,3 @@ urlpatterns = [
 
 ]
 
-#SETTINGS ?

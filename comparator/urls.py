@@ -24,5 +24,6 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mainapp.urls')),
-    url(r'docs/', include_docs_urls(title='Comparator Module API'))
+    url(r'docs/', include_docs_urls(title='Comparator Module API',authentication_classes=[],
+                                    permission_classes=[])),
 ]
