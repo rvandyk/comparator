@@ -41,7 +41,10 @@ scrapyd = ScrapydAPI('http://localhost:6800')
 
 
 
-
+# -----------------------------------------------------------------------------
+# ---------------------------- DJANGO VIEWS -----------------------------------
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def index(request):
     return render(request,'mainapp/index.html')
@@ -94,7 +97,17 @@ def crawlpage(request, toedit=""):
 
 
 
+def showComp(request, id):
+    c = ComparedData.objects.get(id=id)   
+    paginator = Paginator(ast.literal_eval(c.data), 10)  
+    page = request.GET.get('page')
+    plist = paginator.get_page(page)   
+    return render(request, 'mainapp/comparedproducts.html', {'data' : plist})
 
+def removeComp(request,id):
+    c = ComparedData.objects.get(id=id)  
+    c.delete()
+    return redirect('/comparatorpage')
 
 def comparatorpage(request):
     comparators = Comparator.objects.all()
@@ -187,6 +200,11 @@ def editCrawler(request, id):
         print('saved')
         return redirect('/crawlpage')
 
+# -----------------------------------------------------------------------------
+# ---------------------------- CRAWLER --------- ------------------------------
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 def launchCrawler(request, id):
     model = CrawlerModel.objects.get(id=id)
     post_data = {'url': model.url, 'attributesJson' : model.attributesJson, 'id' : id}
@@ -262,6 +280,10 @@ def crawl(request):
         else:
             return JsonResponse({'status': status})
 
+# -----------------------------------------------------------------------------
+# ---------------------------- COMPARISON -------------------------------------
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def format_file(f):    
     f = f.replace("\\\\\\\\", "\\")    
@@ -358,20 +380,6 @@ def compare(idcomp):
         o.save()
     
 
-
-
-
-def showComp(request, id):
-    c = ComparedData.objects.get(id=id)   
-    paginator = Paginator(ast.literal_eval(c.data), 10)  
-    page = request.GET.get('page')
-    plist = paginator.get_page(page)   
-    return render(request, 'mainapp/comparedproducts.html', {'data' : plist})
-
-def removeComp(request,id):
-    c = ComparedData.objects.get(id=id)  
-    c.delete()
-    return redirect('/comparatorpage')
 
 
 # -----------------------------------------------------------------------------
@@ -477,9 +485,6 @@ class findURL(APIView):
 
 
 
-
-
-
 class update(APIView):
     """
     Updates all crawled data and compares datasets    """
@@ -532,11 +537,6 @@ class update(APIView):
 
 
 
-
- 
-
-
-#[["string_sim", "title", "title"], ["price_sim", "price", "price"]]
 
     
 
