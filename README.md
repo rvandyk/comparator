@@ -8,6 +8,8 @@ The crawling system uses Scrapy and Scrapyd
 
 The web application works with Django
 
+Token authentification from endpoint, given username+password. Than use header 'Authorization' : 'Token xxxxx'. admin user x2.
+
 ## How does it work
 
 ### Step 1 : Creating a crawler
@@ -43,5 +45,4 @@ For the moment, two rules are available:
 * price\_sim : compares the similarity of prices, allowing a 15% difference
 ---
 Once a comparator is defined, you can run it by loading 2 crawler results in it (one for crawler1 and one for crawler2), and obtain a json containing all matching entries.
-
 

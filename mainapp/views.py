@@ -13,6 +13,7 @@ import json
 import requests
 import ast
 import time
+from fractions import Fraction
 
 import json 
 import re
@@ -325,7 +326,7 @@ def compare(idcomp):
                 score = 0            
                 for e in process_list:            
                     if e[0] == "string_sim":        
-                        p = string_sim(item1,item2,e[1],e[2],60)                 
+                        p = string_sim(item1,item2,e[1],e[2],int(e[3]))                 
                         to_append[e[1]+"_"+e[2]+"_string_sim"] = p  
                         if (p == 0):                       
                             indicator = False  
@@ -333,7 +334,7 @@ def compare(idcomp):
                         score = score + p
 
                     elif e[0] == "price_sim":
-                        p = price_sim(item1,item2,e[1],e[2],15/100) 
+                        p = price_sim(item1,item2,e[1],e[2],float(Fraction(e[3]))) 
                         to_append[e[1]+"_"+e[2]+"_price_sim"] = p
                         if (p == 0):                    
                             indicator = False      
@@ -535,7 +536,7 @@ class update(APIView):
  
 
 
-
+#[["string_sim", "title", "title"], ["price_sim", "price", "price"]]
 
     
 
