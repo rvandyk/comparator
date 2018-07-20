@@ -1,15 +1,16 @@
 from django.db import models
 import json
 from django.utils import timezone   
-
+from mainapp.validators import validate_url, validate_xpath
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 
 
 class CrawlerModel(models.Model):
     name = models.TextField()
-    url = models.TextField()
-    attributesJson = models.TextField()
+    url = models.TextField(validators=[validate_url])
+    attributesJson = models.TextField(validators=[validate_xpath])
     running = models.BooleanField(default=False)
 
 class MainCrawler(CrawlerModel):

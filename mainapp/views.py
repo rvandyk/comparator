@@ -24,7 +24,7 @@ from mainapp.models import CrawlerModel, Comparator, ComparedData, MainCrawler
 from django.contrib import messages
 
 from mainapp.forms import CrawlForm
-from mainapp.forms import is_valid_url
+from mainapp.validators import is_valid_url
 
 from django.core.paginator import Paginator
 
@@ -487,7 +487,8 @@ class findURL(APIView):
 
 class update(APIView):
     """
-    Updates all crawled data and compares datasets    """
+    Updates all crawled data and compares datasets
+    """
 
     def get(self, request, format=None):
         
