@@ -4,7 +4,11 @@ from django.utils.translation import gettext_lazy as _
 import json
 from django.core.validators import URLValidator
 
+
+
 def is_valid_url(url):
+    """ Validates url format (helper)"""
+
     validate = URLValidator()
     try:
         validate(url)  # check if url format is valid
@@ -13,7 +17,19 @@ def is_valid_url(url):
 
     return True
 
+
+def validate_url(value):
+    """ Validates url format"""
+
+    if not is_valid_url(value):
+        raise ValidationError(
+            _('Invalid URL'),
+            params={'value': value},
+        )
+
 def is_valid_json(jsonfile):
+    """Validates json format"""
+
     try :
         json.loads(jsonfile)
     except ValueError as e:
@@ -22,6 +38,8 @@ def is_valid_json(jsonfile):
     return True
 
 def validate_xpath(value):
+    """Validates xpath input, i.e JSON + have title and price"""
+
     if (not is_valid_json(value)):    
         raise ValidationError(
             _('Invalid JSON format'),
@@ -33,9 +51,3 @@ def validate_xpath(value):
             params={'value': value},
         )
     
-def validate_url(value):
-    if not is_valid_url(value):
-        raise ValidationError(
-            _('Invalid URL'),
-            params={'value': value},
-        )

@@ -40,7 +40,7 @@ from mainapp.serializers import ScrapyItemSerializer, ComparedDataSerializer, Ma
 scrapyd = ScrapydAPI('http://localhost:6800')
 
 
-
+# -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # ---------------------------- DJANGO VIEWS -----------------------------------
 # -----------------------------------------------------------------------------
@@ -172,9 +172,6 @@ def remove_data(request, unique_id):
     return redirect('/crawlpage')
 
     
-    
-
-
 
 @require_http_methods(['POST'])
 def editCrawler(request, id):
@@ -200,10 +197,18 @@ def editCrawler(request, id):
         print('saved')
         return redirect('/crawlpage')
 
+
+
+
+
+
 # -----------------------------------------------------------------------------
 # ---------------------------- CRAWLER --------- ------------------------------
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
+
+
+
 
 def launchCrawler(request, id):
     model = CrawlerModel.objects.get(id=id)
