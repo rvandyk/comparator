@@ -16,7 +16,7 @@ hyperlink==18.0.0
 idna==2.6
 incremental==17.5.0
 jsonschema==2.6.0
-lxml==4.2.1
+lxml==4.6.2
 parsel==1.4.0
 pip==10.0.1
 pyOpenSSL==18.0.0
